@@ -4,8 +4,20 @@
 
 class TestGame : public engine::Game {
 public:
+    engine::Texture tex;
+    glm::vec2 position;
+
+    void onInit() override {
+        tex.init("assets/sprites/awesomeface.png");
+        position = glm::vec2(50.0f, 50.0f);
+    }
+
+    void onRender() override {
+        sprite_renderer.draw(&tex, position, {100.0f, 100.0f});
+    }
+
     void onUpdate(float dt) override {
-        std::cout << "Current FPS: " << 1 / dt << std::endl;
+        position.x += 1.0f;
     }
 };
 

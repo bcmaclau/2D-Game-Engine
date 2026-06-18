@@ -8,6 +8,10 @@ add_library(Engine2D STATIC
     src/core/Game.cpp
     src/core/Window.cpp
     src/core/Time.cpp
+    src/renderer/Shader.cpp
+    src/renderer/Texture.cpp
+    src/renderer/Camera2D.cpp
+    src/renderer/SpriteRenderer.cpp
     dependencies/glad/src/glad.c
     dependencies/stb/stb_image.cpp
 )
@@ -19,7 +23,7 @@ target_include_directories(Engine2D PUBLIC
 target_include_directories(Engine2D PRIVATE
     src/
     dependencies/glad/include/
-    dependencies/stb/
+    dependencies/
 )
 
 add_subdirectory(dependencies/glfw)

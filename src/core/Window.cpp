@@ -48,10 +48,8 @@ namespace engine {
     }
 
     void Window::swapBuffers() {
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
         glfwSwapBuffers(window);
+        glfwSwapInterval(1);
     }
 
     int Window::getWidth() {

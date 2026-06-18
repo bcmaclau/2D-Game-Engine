@@ -3,6 +3,9 @@
 #include "engine/core/Window.h"
 #include "engine/core/Time.h"
 
+#include "engine/renderer/Texture.h"
+#include "engine/renderer/SpriteRenderer.h"
+
 namespace engine {
 
     class Game {
@@ -20,6 +23,9 @@ namespace engine {
 
         Window window;
         Time time;
+
+        Camera2D camera;
+        SpriteRenderer sprite_renderer;
 
     private:
         void init();

@@ -1,6 +1,6 @@
-#include "engine/core/Game.h"
+#include <glad/glad.h>
 
-#include <iostream>
+#include "engine/core/Game.h"
 
 namespace engine {
 
@@ -10,10 +10,20 @@ namespace engine {
     void Game::run() {
         init();
 
+        float acc = 0.0f;
+        float update_interval = 1.0f / 60.0f;
+
         while (running && !window.shouldClose()) {
             time.update();
+            acc += time.getDeltaTime();
+
             processInput();
-            update(time.getDeltaTime());
+
+            while (acc >= update_interval) {
+                update(time.getDeltaTime());
+                acc -= update_interval;
+            }
+
             render();
         }
 
@@ -21,9 +31,11 @@ namespace engine {
     }
 
     void Game::init() {
-        std::cout << "Initializing Game" << std::endl;
-
         window.init(800, 600, "test");
+
+        camera.init(800, 600);
+
+        sprite_renderer.init();
 
         onInit();
     }
@@ -33,21 +45,22 @@ namespace engine {
     }
 
     void Game::update(float dt) {
-        std::cout << "Updating Game" << std::endl;
-
         onUpdate(dt);
     }
 
     void Game::render() {
-        std::cout << "Rendering Game" << std::endl;
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
+        sprite_renderer.beginFrame(&camera);
         onRender();
+        sprite_renderer.endFrame();
 
         window.swapBuffers();
     }
 
     void Game::shutdown() {
-        std::cout << "Shutting Down Game" << std::endl;
+        window.shutdown();
 
         onShutdown();
     }
