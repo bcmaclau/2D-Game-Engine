@@ -17,11 +17,13 @@ namespace engine {
             time.update();
             acc += time.getDeltaTime();
 
-            processInput();
-
             while (acc >= update_interval) {
+                processInput();
+
                 update(time.getDeltaTime());
                 acc -= update_interval;
+
+                Input::endFrame();
             }
 
             render();
@@ -36,6 +38,8 @@ namespace engine {
         camera.init(800, 600);
 
         sprite_renderer.init();
+
+        Input::init(window.getNativeHandle());
 
         onInit();
     }
@@ -60,9 +64,9 @@ namespace engine {
     }
 
     void Game::shutdown() {
-        window.shutdown();
-
+        sprite_renderer.shutdown();
         onShutdown();
+        window.shutdown();
     }
 
 }

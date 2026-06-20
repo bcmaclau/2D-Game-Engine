@@ -10,3 +10,7 @@
 #include "engine/renderer/Texture.h"
 #include "engine/renderer/Camera2D.h"
 #include "engine/renderer/SpriteRenderer.h"
+
+// --- Input ---
+#include "engine/input/KeyCode.h"
+#include "engine/input/Input.h"

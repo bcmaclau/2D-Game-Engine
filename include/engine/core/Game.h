@@ -6,6 +6,8 @@
 #include "engine/renderer/Texture.h"
 #include "engine/renderer/SpriteRenderer.h"
 
+#include "engine/input/Input.h"
+
 namespace engine {
 
     class Game {
