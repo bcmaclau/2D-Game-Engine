@@ -9,6 +9,7 @@ namespace engine {
 
         bool init(const char* path);
         void bind(unsigned int slot = 0);
+        void shutdown();
 
         int getWidth();
         int getHeight();

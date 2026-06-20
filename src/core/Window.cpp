@@ -35,7 +35,9 @@ namespace engine {
     }
 
     void Window::shutdown() {
-        glfwDestroyWindow(window);
+        if (window) {
+            glfwDestroyWindow(window);
+        }
         glfwTerminate();
     }
 

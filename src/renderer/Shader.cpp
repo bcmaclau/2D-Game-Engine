@@ -93,4 +93,12 @@ namespace engine {
         glUseProgram(id);
     }
 
+    void Shader::shutdown() {
+        if (id)  {
+            glUseProgram(0);
+            glDeleteProgram(id);
+            id = 0;
+        }
+    }
+
 }

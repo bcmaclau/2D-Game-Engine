@@ -41,6 +41,13 @@ namespace engine {
         glBindTexture(GL_TEXTURE_2D, id);
     }
 
+    void Texture::shutdown() {
+        if (id) {
+            glDeleteTextures(1, &id);
+            id = 0;
+        }
+    }
+
     int Texture::getWidth() { return width; }
     int Texture::getHeight() { return height; }
 
