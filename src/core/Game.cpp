@@ -10,6 +10,7 @@ namespace engine {
     void Game::run() {
         init();
 
+        // makes sure update always happens only 60 times per second independently from rendering
         float acc = 0.0f;
         float update_interval = 1.0f / 60.0f;
 
@@ -34,12 +35,10 @@ namespace engine {
 
     void Game::init() {
         window.init(800, 600, "test");
-
         camera.init(800, 600);
-
         sprite_renderer.init();
-
         Input::init(window.getNativeHandle());
+        scene.setAssets(&assets);
 
         onInit();
     }
@@ -49,6 +48,8 @@ namespace engine {
     }
 
     void Game::update(float dt) {
+        scene.update(dt);
+
         onUpdate(dt);
     }
 
@@ -57,15 +58,18 @@ namespace engine {
         glClear(GL_COLOR_BUFFER_BIT);
 
         sprite_renderer.beginFrame(&camera);
+        scene.draw(&sprite_renderer);
         onRender();
+        
         sprite_renderer.endFrame();
-
         window.swapBuffers();
     }
 
     void Game::shutdown() {
-        sprite_renderer.shutdown();
         onShutdown();
+        sprite_renderer.shutdown();
+        scene.clear();
+        assets.clear();
         window.shutdown();
     }
 

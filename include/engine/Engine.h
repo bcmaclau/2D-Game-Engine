@@ -14,3 +14,7 @@
 // --- Input ---
 #include "engine/input/KeyCode.h"
 #include "engine/input/Input.h"
+
+// --- Scene ---
+#include "engine/scene/Scene.h"
+#include "engine/scene/GameObject.h"

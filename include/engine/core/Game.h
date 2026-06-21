@@ -5,8 +5,11 @@
 
 #include "engine/renderer/Texture.h"
 #include "engine/renderer/SpriteRenderer.h"
+#include "engine/renderer/AssetManager.h"
 
 #include "engine/input/Input.h"
+
+#include "engine/scene/Scene.h"
 
 namespace engine {
 
@@ -26,6 +29,8 @@ namespace engine {
         Window window;
         Time time;
 
+        AssetManager assets;
+        Scene scene;
         Camera2D camera;
         SpriteRenderer sprite_renderer;
 

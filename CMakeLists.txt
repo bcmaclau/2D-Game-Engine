@@ -12,7 +12,10 @@ add_library(Engine2D STATIC
     src/renderer/Texture.cpp
     src/renderer/Camera2D.cpp
     src/renderer/SpriteRenderer.cpp
+    src/renderer/AssetManager.cpp
     src/input/Input.cpp
+    src/scene/GameObject.cpp
+    src/scene/Scene.cpp
     dependencies/glad/src/glad.c
     dependencies/stb/stb_image.cpp
 )
