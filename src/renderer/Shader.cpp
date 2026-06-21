@@ -2,6 +2,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "engine/renderer/Shader.h"
+#include "engine/core/Paths.h"
 
 #include <string>
 #include <fstream>
@@ -23,9 +24,13 @@ namespace engine {
 
         v_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         f_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+        std::string vertex_r_path = Paths::resolve(std::string(vertex_path));
+        std::string fragment_r_path = Paths::resolve(std::string(fragment_path));
+
         try {
-            v_shader_file.open(vertex_path);
-            f_shader_file.open(fragment_path);
+            v_shader_file.open(vertex_r_path);
+            f_shader_file.open(fragment_r_path);
             std::stringstream v_shader_stream, f_shader_stream;
 
             v_shader_stream << v_shader_file.rdbuf();

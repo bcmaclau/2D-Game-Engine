@@ -1,16 +1,19 @@
 #include "engine/renderer/AssetManager.h"
 
+#include "engine/core/Paths.h"
+
 namespace engine {
 
     AssetManager::AssetManager() {}
     AssetManager::~AssetManager() {}
 
     Texture* AssetManager::loadTexture(std::string path) {
-        if (textures.find(path) != textures.end()) { return textures[path]; }
+        std::string r_path = Paths::resolve(path);
+        if (textures.find(r_path) != textures.end()) { return textures[r_path]; }
         
         Texture* tex = new Texture();
-        tex->init(path.c_str());
-        textures[path] = tex;
+        tex->init(r_path.c_str());
+        textures[r_path] = tex;
         return tex;
     }
 

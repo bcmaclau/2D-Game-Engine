@@ -8,6 +8,7 @@ add_library(Engine2D STATIC
     src/core/Game.cpp
     src/core/Window.cpp
     src/core/Time.cpp
+    src/core/Paths.cpp
     src/renderer/Shader.cpp
     src/renderer/Texture.cpp
     src/renderer/Camera2D.cpp
