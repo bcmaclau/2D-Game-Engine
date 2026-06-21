@@ -2,7 +2,7 @@
 
 namespace engine {
 
-    enum Key {
+    enum class Key {
         UNKNOWN = -1,
         SPACE, ENTER, ESCAPE, TAB, BACKSPACE,
         UP, DOWN, LEFT, RIGHT,

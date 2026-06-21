@@ -16,27 +16,27 @@ namespace engine {
 
         // --- Transform ---
         void setPosition(glm::vec2 pos);
-        glm::vec2 getPosition();
+        glm::vec2 getPosition() const;
         void move(glm::vec2 delta);
 
         void setSize(glm::vec2 s);
-        glm::vec2 getSize();
+        glm::vec2 getSize() const;
 
         void setRotation(float r);
-        float getRotation();
+        float getRotation() const;
         void rotate(float r);
 
         // --- Active ---
         void setActive(bool a);
-        bool isActive();
+        bool isActive() const;
 
         // --- Texture ---
         void setTexture(const char* path);
-        Texture* getTexture();
+        Texture* getTexture() const;
 
         // --- Bounding Box ---
-        glm::vec2 getMin(); // bottom left
-        glm::vec2 getMax(); // top right
+        glm::vec2 getMin() const; // bottom left
+        glm::vec2 getMax() const; // top right
 
     private:
         glm::vec2 position;

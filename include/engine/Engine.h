@@ -18,3 +18,6 @@
 // --- Scene ---
 #include "engine/scene/Scene.h"
 #include "engine/scene/GameObject.h"
+
+// --- Physics ---
+#include "engine/physics/Collision.h"

@@ -2,6 +2,8 @@
 
 #include "Players.h"
 
+#include <iostream>
+
 class TestGame : public engine::Game {
 public:
     Player1* p1;
@@ -14,7 +16,24 @@ public:
     }
 
     void onUpdate(float dt) override {
-        
+        engine::CollisionResult col = engine::Collision::AABBCollisionDetailed(*p1, *p2);
+
+        if (col.collided) {
+            switch (col.side) {
+                case engine::CollisionSide::LEFT:
+                    std::cout << "left" << std::endl;
+                    break;
+                case engine::CollisionSide::RIGHT:
+                    std::cout << "right" << std::endl;
+                    break;
+                case engine::CollisionSide::TOP:
+                    std::cout << "top" << std::endl;
+                    break;
+                default:
+                    std::cout << "bottom" << std::endl;
+                    break;
+            }
+        }
     }    
 
     void onRender() override {

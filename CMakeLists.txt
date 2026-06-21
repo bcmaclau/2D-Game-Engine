@@ -16,6 +16,7 @@ add_library(Engine2D STATIC
     src/input/Input.cpp
     src/scene/GameObject.cpp
     src/scene/Scene.cpp
+    src/physics/Collision.cpp
     dependencies/glad/src/glad.c
     dependencies/stb/stb_image.cpp
 )
