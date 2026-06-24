@@ -14,6 +14,8 @@ namespace engine {
 
         bool shouldClose();
         void pollEvents();
+
+        void clear();
         void swapBuffers();
 
         int getWidth();

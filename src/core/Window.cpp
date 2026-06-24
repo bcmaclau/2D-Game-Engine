@@ -49,6 +49,11 @@ namespace engine {
         glfwPollEvents();
     }
 
+    void Window::clear() {
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
     void Window::swapBuffers() {
         glfwSwapBuffers(window);
         glfwSwapInterval(1);
