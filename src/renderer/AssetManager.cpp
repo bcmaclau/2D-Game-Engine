@@ -2,17 +2,22 @@
 
 #include "engine/core/Paths.h"
 
+#include <iostream>
+
 namespace engine {
 
-    AssetManager::AssetManager() {}
-    AssetManager::~AssetManager() {}
-
-    Texture* AssetManager::loadTexture(std::string path) {
-        std::string r_path = Paths::resolve(path);
-        if (textures.find(r_path) != textures.end()) { return textures[r_path]; }
+    Texture* AssetManager::loadTexture(const char* path) {
+        std::string s_path(path);
+        std::string r_path = Paths::resolve(s_path);
+        auto it = textures.find(r_path);
+        if (it != textures.end()) { return it->second; }
         
         Texture* tex = new Texture();
-        tex->init(r_path.c_str());
+        if (!tex->init(r_path.c_str())) {
+            std::cout << "Failed to load texture :" << path << std::endl;
+            delete tex;
+            return nullptr;
+        }
         textures[r_path] = tex;
         return tex;
     }

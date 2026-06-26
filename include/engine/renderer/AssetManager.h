@@ -9,14 +9,14 @@ namespace engine {
 
     class AssetManager {
     public:
-        AssetManager();
-        ~AssetManager();
+        AssetManager() {}
+        ~AssetManager() {}
 
-        Texture* loadTexture(std::string path);
+        Texture* loadTexture(const char* path);
         void clear();
 
     private:
-        std::unordered_map<std::string, Texture*> textures; 
+        std::unordered_map<std::string, Texture*> textures;
     };
 
 }
