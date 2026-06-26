@@ -6,8 +6,8 @@ namespace engine {
 
     class Window {
     public:
-        Window();
-        ~Window();
+        Window() {}
+        ~Window() {}
 
         bool init(int width, int height, const char* title);
         void shutdown();
@@ -18,9 +18,9 @@ namespace engine {
         void clear();
         void swapBuffers();
 
-        int getWidth();
-        int getHeight();
-        GLFWwindow* getNativeHandle();
+        int getWidth() const;
+        int getHeight() const;
+        GLFWwindow* getNativeHandle() const;
 
     private:
         GLFWwindow* window;

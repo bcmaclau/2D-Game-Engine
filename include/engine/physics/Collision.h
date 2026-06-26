@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/scene/GameObject.h"
+#include "engine/scene/BaseGameObject.h"
 
 namespace engine {
 
@@ -16,12 +16,12 @@ namespace engine {
 
     class Collision {
     public:
-        static bool AABBCollision(const GameObject& a, const GameObject& b);
+        static bool AABBCollision(const BaseGameObject& a, const BaseGameObject& b);
 
-        static CollisionResult AABBCollisionDetailed(const GameObject& a, const GameObject& b);
+        static CollisionResult AABBCollisionDetailed(const BaseGameObject& a, const BaseGameObject& b);
 
     private:
-        Collision();
+        Collision() {}
     };
 
 }

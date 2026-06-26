@@ -4,9 +4,6 @@
 
 namespace engine {
 
-    Time::Time() : dt(0.0f), lt(0.0f) {}
-    Time::~Time() {}
-
     void Time::update() {
         float ct = (float)glfwGetTime();
         dt = ct - lt;

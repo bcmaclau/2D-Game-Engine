@@ -4,15 +4,15 @@ namespace engine {
 
     class Texture {
     public:
-        Texture();
-        ~Texture();
+        Texture() {}
+        ~Texture() {}
 
         bool init(const char* path);
         void bind(unsigned int slot = 0);
         void shutdown();
 
-        int getWidth();
-        int getHeight();
+        int getWidth() const;
+        int getHeight() const;
 
     private:
         unsigned int id;

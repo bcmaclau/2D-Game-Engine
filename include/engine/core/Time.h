@@ -4,8 +4,8 @@ namespace engine {
 
     class Time {
     public:
-        Time();
-        ~Time();
+        Time() : dt(0.0f), lt(0.0f) {}
+        ~Time() {}
 
         void update();
 

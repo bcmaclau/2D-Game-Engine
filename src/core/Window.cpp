@@ -7,9 +7,6 @@
 
 namespace engine {
 
-    Window::Window() {}
-    Window::~Window() {}
-
     bool Window::init(int width, int height, const char* title) {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -56,18 +53,17 @@ namespace engine {
 
     void Window::swapBuffers() {
         glfwSwapBuffers(window);
-        glfwSwapInterval(1);
     }
 
-    int Window::getWidth() {
+    int Window::getWidth() const {
         return width;
     }
 
-    int Window::getHeight() {
+    int Window::getHeight() const {
         return height;
     }
 
-    GLFWwindow* Window::getNativeHandle() {
+    GLFWwindow* Window::getNativeHandle() const {
         return window;
     }
 

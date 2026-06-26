@@ -7,13 +7,6 @@
 
 namespace engine {
 
-    Texture::Texture() : id(0), width(0), height(0), channels(0) {}
-    Texture::~Texture() {
-        if (id) {
-            glDeleteTextures(1, &id);
-        }
-    }
-
     bool Texture::init(const char* path) {
         glGenTextures(1, &id);
         glBindTexture(GL_TEXTURE_2D, id);
@@ -44,11 +37,10 @@ namespace engine {
     void Texture::shutdown() {
         if (id) {
             glDeleteTextures(1, &id);
-            id = 0;
         }
     }
 
-    int Texture::getWidth() { return width; }
-    int Texture::getHeight() { return height; }
+    int Texture::getWidth() const { return width; }
+    int Texture::getHeight() const { return height; }
 
 }

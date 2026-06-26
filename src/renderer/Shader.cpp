@@ -11,13 +11,6 @@
 
 namespace engine {
 
-    Shader::Shader() {}
-    Shader::~Shader() {
-        if (id) {
-            glDeleteProgram(id);
-        }
-    }
-
     bool Shader::init(const char* vertex_path, const char* fragment_path) {
         std::string vertex_code, fragment_code;
         std::ifstream v_shader_file, f_shader_file;
@@ -102,7 +95,6 @@ namespace engine {
         if (id)  {
             glUseProgram(0);
             glDeleteProgram(id);
-            id = 0;
         }
     }
 

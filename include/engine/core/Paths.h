@@ -12,7 +12,7 @@ namespace engine {
         static std::string resolve(const std::string& relative_path);
     
     private:
-        Paths();
+        Paths() {}
     };
 
 }

@@ -5,16 +5,18 @@
 
 namespace engine {
 
-    Collision::Collision() {}
-
-    bool Collision::AABBCollision(const GameObject& a, const GameObject& b) {
+    bool Collision::AABBCollision(const BaseGameObject& a, const BaseGameObject& b) {
+        /*
         glm::vec2 aMin = a.getMin(), aMax = a.getMax();
         glm::vec2 bMin = b.getMin(), bMax = b.getMax();
 
         return aMin.x < bMax.x && aMax.x > bMin.x && aMin.y < bMax.y && aMax.y > bMin.y;
+        */
+        return false;
     }
 
-    CollisionResult Collision::AABBCollisionDetailed(const GameObject& a, const GameObject& b) {
+    CollisionResult Collision::AABBCollisionDetailed(const BaseGameObject& a, const BaseGameObject& b) {
+        /*
         CollisionResult result;
 
         if (!AABBCollision(a, b)) { return result; }
@@ -25,8 +27,8 @@ namespace engine {
 
         float right = std::abs(aMax.x - bMin.x);
         float left = std::abs(aMin.x - bMax.x);
-        float bottom = std::abs(aMax.y - bMin.y);
-        float top = std::abs(aMin.y - bMax.y);
+        float top = std::abs(aMax.y - bMin.y);
+        float bottom = std::abs(aMin.y - bMax.y);
 
         float min_overlap = std::min({ right, left, top, bottom });
 
@@ -37,6 +39,9 @@ namespace engine {
 
         result.penetration = min_overlap;
 
+        return result;
+        */
+        CollisionResult result;
         return result;        
     }
 

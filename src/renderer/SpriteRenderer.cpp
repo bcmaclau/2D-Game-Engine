@@ -6,9 +6,6 @@
 
 namespace engine {
 
-    SpriteRenderer::SpriteRenderer() : VAO(0), VBO(0), EBO(0) {}
-    SpriteRenderer::~SpriteRenderer() {}
-
     bool SpriteRenderer::init() {
         if (!shader.init("assets/shaders/test.vert", "assets/shaders/test.frag")) { return false; }
 
@@ -60,7 +57,7 @@ namespace engine {
         glBindVertexArray(VAO);
     }
 
-    void SpriteRenderer::draw(Texture* texture, glm::vec2 position, glm::vec2 size, float rotation) {
+    void SpriteRenderer::draw(Texture* texture, const glm::vec2& position, const glm::vec2& size, float rotation) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position, 0.0f));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
