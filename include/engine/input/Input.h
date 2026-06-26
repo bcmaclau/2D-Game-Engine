@@ -1,13 +1,20 @@
 #pragma once
 
-#include "KeyCode.h"
-
 struct GLFWwindow;
 
 namespace engine {
     
     class Input {
     public:
+        enum class Key {
+            UNKNOWN = -1,
+            SPACE, ENTER, ESCAPE, TAB, BACKSPACE,
+            UP, DOWN, LEFT, RIGHT,
+            A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+            NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, NUM_0,
+            LEFT_SHIFT, RIGHT_SHIFT, LEFT_CONTROL, RIGHT_CONTROL
+        };
+
         static void init(GLFWwindow* window);
         static bool isKeyPushed(Key key);
         static bool isKeyHeld(Key key);
@@ -15,6 +22,8 @@ namespace engine {
         static void endFrame();
     
     private:
+        Input() {}
+
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
         static Key fromGLFW(int key);

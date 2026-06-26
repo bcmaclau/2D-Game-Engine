@@ -33,7 +33,7 @@ namespace engine {
         if (action == GLFW_RELEASE) { current_keys[(int)k] = false; }
     }
 
-    Key Input::fromGLFW(int key) {
+    Input::Key Input::fromGLFW(int key) {
         switch (key) {
             case GLFW_KEY_SPACE: return Key::SPACE;
             case GLFW_KEY_ENTER: return Key::ENTER;
