@@ -1,53 +1,50 @@
 #include <engine/Engine.h>
 
-#include "Players.h"
-
 #include <iostream>
 
-class TestGame : public engine::Game {
+class AwesomeFace : public engine::BaseGameObject {
 public:
-    Player1* p1;
-    Player2* p2;
+    int spawn;
 
     void onInit() override {
-        p1 = scene.instantiateGameObject<Player1>();
+        spawn = 0;
 
-        p2 = scene.instantiateGameObject<Player2>();
+        transform->setPosition({ 100.0f, 100.0f });
+
+        attachComponent(engine::component::ID::SINGLE_SPRITE);
+        single_sprite->setTexture("assets/sprites/awesomeface.png");
+        single_sprite->setDimensions({ 100.0f, 100.0f });
     }
 
     void onUpdate(float dt) override {
-        engine::CollisionResult col = engine::Collision::AABBCollisionDetailed(*p1, *p2);
-
-        if (col.collided) {
-            switch (col.side) {
-                case engine::CollisionSide::LEFT:
-                    std::cout << "left" << std::endl;
-                    break;
-                case engine::CollisionSide::RIGHT:
-                    std::cout << "right" << std::endl;
-                    break;
-                case engine::CollisionSide::TOP:
-                    std::cout << "top" << std::endl;
-                    break;
-                default:
-                    std::cout << "bottom" << std::endl;
-                    break;
+        if (engine::Input::isKeyPushed(engine::Input::Key::SPACE)) {
+            if (spawn == 0) {
+                BaseGameObject* obj = instantiateOther<AwesomeFace>();
+                obj->transform->setPosition(transform->getPosition());
+                obj->transform->move({ 100.0f, 0.0f });
             }
+            else if (spawn == 2) {
+                destroySelf();
+            }
+            spawn++;
         }
-    }    
-
-    void onRender() override {
-        
     }
+};
 
-    void onShutdown() override {
+class TestScene : public engine::BaseScene {
+public:
+    AwesomeFace* awesome_face;
 
+    void onInit() override {
+        awesome_face = instantiate<AwesomeFace>();
     }
 };
 
 int main() {
-    TestGame game;
-    game.run();
+    TestScene first_scene;
+
+    engine::Game game;
+    game.run(first_scene);
 
     return 0;
 }

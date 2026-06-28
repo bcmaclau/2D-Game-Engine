@@ -1,76 +1,92 @@
-#include <glad/glad.h>
-
 #include "engine/core/Game.h"
+
+#include "engine/input/Input.h"
+
+#include <iostream>
 
 namespace engine {
 
-    Game::Game() {}
-    Game::~Game() {}
+    void Game::run(BaseScene& first_scene) {
+        init(first_scene);
 
-    void Game::run() {
-        init();
-
-        // makes sure update always happens only 60 times per second independently from rendering
-        float acc = 0.0f;
-        float update_interval = 1.0f / 60.0f;
-
-        while (running && !window.shouldClose()) {
+        // main game loop
+        while (running && !window.shouldClose() && !active_scene->end_game) {
+            // simple pipeline: 
+            // get time -> get user input -> update game -> render game
             time.update();
-            acc += time.getDeltaTime();
+            window.pollEvents();
+            update(time.getDeltaTime());
+            render();
 
-            while (acc >= update_interval) {
-                processInput();
-
-                update(time.getDeltaTime());
-                acc -= update_interval;
-
-                Input::endFrame();
+            if (active_scene->swap_scene) {
+                loadNewScene();
+                //Input::reset_keys();
             }
 
-            render();
+            active_scene->endFrame();
+            Input::endFrame();
         }
 
         shutdown();
     }
 
-    void Game::init() {
-        window.init(800, 600, "test");
-        camera.init(800, 600);
-        sprite_renderer.init();
-        Input::init(window.getNativeHandle());
-        scene.setAssets(&assets);
+    void Game::init(BaseScene& first_scene) {
+        // window initialization
+        if (!window.init(screen_width, screen_height, "testing")) {
+            std::cout << "Failed to create GLFW window. Shutting Down" << std::endl;
+            running = false;
+        }
 
+        // input initialization
+        Input::init(window.getNativeHandle());
+
+        // scene initialization
+        active_scene = &first_scene;
+        active_scene->init(&assets, screen_width, screen_height);
+
+        // user-implemented game init
         onInit();
     }
 
-    void Game::processInput() {
-        window.pollEvents();
-    }
-
     void Game::update(float dt) {
-        scene.update(dt);
-
+        // update runs every time this function is called immediately
         onUpdate(dt);
+        active_scene->update(dt);
+        
+        // fixed update always runs at a rate of 60 times per second
+        acc += dt;
+        while (acc >= update_interval) {
+            onFixedUpdate();
+            active_scene->fixedUpdate();
+            acc -= update_interval;
+        }
     }
 
     void Game::render() {
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        // render pipline:
+        // clear window -> draw to screen -> swap buffers
+        window.clear();
 
-        sprite_renderer.beginFrame(&camera);
-        scene.draw(&sprite_renderer);
         onRender();
-        
-        sprite_renderer.endFrame();
+        active_scene->draw();
+
         window.swapBuffers();
     }
 
     void Game::shutdown() {
+        // shutdown order:
+        // game objects, textures, shaders, then window last
         onShutdown();
-        sprite_renderer.shutdown();
-        scene.clear();
         assets.clear();
         window.shutdown();
+    }
+
+    void Game::loadNewScene() {
+        active_scene->shutdown();
+        if (!first_scene) { delete active_scene; }
+        else { first_scene = false; }
+        active_scene = active_scene->new_scene;
+        active_scene->init(&assets, screen_width, screen_height);
     }
 
 }

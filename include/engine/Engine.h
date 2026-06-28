@@ -12,12 +12,12 @@
 #include "engine/renderer/SpriteRenderer.h"
 
 // --- Input ---
-#include "engine/input/KeyCode.h"
 #include "engine/input/Input.h"
 
 // --- Scene ---
-#include "engine/scene/Scene.h"
-#include "engine/scene/GameObject.h"
+#include "engine/scene/BaseScene.h"
+#include "engine/scene/BaseGameObject.h"
+#include "engine/scene/Components.h"
 
 // --- Physics ---
 #include "engine/physics/Collision.h"
