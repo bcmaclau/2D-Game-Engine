@@ -5,6 +5,8 @@ struct GLFWwindow;
 namespace engine {
     
     class Input {
+        friend class Game;
+        
     public:
         enum class Key {
             UNKNOWN = -1,
@@ -15,21 +17,21 @@ namespace engine {
             LEFT_SHIFT, RIGHT_SHIFT, LEFT_CONTROL, RIGHT_CONTROL
         };
 
-        static void init(GLFWwindow* window);
         static bool isKeyPushed(Key key);
         static bool isKeyHeld(Key key);
-
-        static void endFrame();
-    
+        
     private:
         Input() {}
-
+        
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
+        
         static Key fromGLFW(int key);
-
+        
         static bool current_keys[49];
         static bool prev_keys[49];
+        
+        static void init(GLFWwindow* window);
+        static void endFrame();
     };
 
 }
