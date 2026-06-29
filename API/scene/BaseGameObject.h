@@ -1,12 +1,12 @@
 #pragma once
 
+#include "scene/BaseScene.h"
+#include "renderer/AssetManager.h"
+
 #include <vector>
 
 namespace engine {
     
-    class BaseScene;
-    class AssetManager;
-
     namespace Component {
         enum class ID;
         class Transform;

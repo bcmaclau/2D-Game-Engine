@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "engine/renderer/Shader.h"
-#include "engine/renderer/Texture.h"
-#include "engine/renderer/Camera2D.h"
+#include "renderer/Shader.h"
+#include "renderer/Texture.h"
+#include "renderer/Camera2D.h"
 
 
 namespace engine {

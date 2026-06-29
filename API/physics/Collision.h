@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/scene/BaseGameObject.h"
+#include "scene/BaseGameObject.h"
 
 namespace engine {
 

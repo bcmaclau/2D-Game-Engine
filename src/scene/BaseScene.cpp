@@ -1,7 +1,7 @@
-#include "engine/scene/BaseScene.h"
+#include "scene/BaseScene.h"
 
-#include "engine/scene/BaseGameObject.h"
-#include "engine/scene/Components.h"
+#include "scene/BaseGameObject.h"
+#include "scene/Components.h"
 
 #include <iostream>
 
@@ -29,8 +29,10 @@ namespace engine {
 
     void BaseScene::init(AssetManager* a, int screen_width, int screen_height) {
         assets = a;
-        sprite_renderer.init();
-        camera.init(screen_width, screen_height);
+        sprite_renderer = new SpriteRenderer();
+        sprite_renderer->init();
+        camera = new Camera2D();
+        camera->init(screen_width, screen_height);
         onInit();
     }
 
@@ -55,15 +57,17 @@ namespace engine {
     }
 
     void BaseScene::draw() {
-        sprite_renderer.beginFrame(&camera);
+        sprite_renderer->beginFrame(camera);
 
         BaseGameObject* obj = nullptr;
-        component::SingleSprite* sprite = nullptr;
+        Component::SingleSprite* sprite = nullptr;
         for (int i = 0; i < game_objects.size(); i++) {
             obj = game_objects[i];
             sprite = obj->single_sprite;
+            glm::vec2 pos = glm::vec2(obj->transform->getPosition().x, obj->transform->getPosition().y);
+            glm::vec2 dim = glm::vec2(sprite->getDimensions().x, sprite->getDimensions().y);
             if (sprite) {
-                sprite_renderer.draw(sprite->getTexture(), obj->transform->getPosition(), sprite->getDimensions(), obj->transform->getRotation());
+                sprite_renderer->draw(sprite->getTexture(), pos, dim, obj->transform->getRotation());
             }
         }
     }
@@ -87,7 +91,7 @@ namespace engine {
         }
         for (int i = 0; i < to_destroy.size(); i++) { destroy(to_destroy[i]); }
 
-        sprite_renderer.endFrame();
+        sprite_renderer->endFrame();
     } 
 
     void BaseScene::shutdown() {
@@ -101,7 +105,10 @@ namespace engine {
         }
         game_objects.clear();
 
-        sprite_renderer.shutdown();
+        sprite_renderer->shutdown();
+        delete sprite_renderer;
+
+        delete camera;
     }
 
 }

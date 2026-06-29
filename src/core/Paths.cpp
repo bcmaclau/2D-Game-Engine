@@ -1,4 +1,4 @@
-#include "engine/core/Paths.h"
+#include "core/Paths.h"
 
 #if defined(__linux__)
     #include <unistd.h>

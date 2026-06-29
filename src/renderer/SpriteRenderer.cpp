@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 
-#include "engine/renderer/SpriteRenderer.h"
+#include "renderer/SpriteRenderer.h"
 
 #include <glm/ext/matrix_transform.hpp>
 

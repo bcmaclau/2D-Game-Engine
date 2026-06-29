@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <stb/stb_image.h>
 
-#include <engine/renderer/Texture.h>
+#include <renderer/Texture.h>
 
 #include <iostream>
 

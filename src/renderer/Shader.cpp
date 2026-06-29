@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/renderer/Shader.h"
-#include "engine/core/Paths.h"
+#include "renderer/Shader.h"
+#include "core/Paths.h"
 
 #include <string>
 #include <fstream>

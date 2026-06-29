@@ -19,6 +19,7 @@ add_library(Engine2D STATIC
     src/scene/BaseScene.cpp
     src/scene/Components.cpp
     src/physics/Collision.cpp
+    src/math/Vector.cpp
     dependencies/glad/src/glad.c
     dependencies/stb/stb_image.cpp
 )
@@ -29,6 +30,7 @@ target_include_directories(Engine2D PUBLIC
 
 target_include_directories(Engine2D PRIVATE
     src/
+    API/
     dependencies/glad/include/
     dependencies/
 )

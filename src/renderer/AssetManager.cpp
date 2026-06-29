@@ -1,6 +1,6 @@
-#include "engine/renderer/AssetManager.h"
+#include "renderer/AssetManager.h"
 
-#include "engine/core/Paths.h"
+#include "core/Paths.h"
 
 #include <iostream>
 

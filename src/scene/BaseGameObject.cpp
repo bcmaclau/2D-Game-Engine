@@ -1,20 +1,20 @@
-#include "engine/scene/BaseGameObject.h"
+#include "scene/BaseGameObject.h"
 
-#include "engine/scene/Components.h"
+#include "scene/Components.h"
 
 #include <iostream>
 
 namespace engine {
 
-    void BaseGameObject::attachComponent(component::ID component_id) {
+    void BaseGameObject::attachComponent(Component::ID component_id) {
         switch (component_id) {
-            case component::ID::TRANSFORM:
+            case Component::ID::TRANSFORM:
                 if (transform) { std::cout << "Game Object Already Has Transform Component" << std::endl; return; }
-                transform = new component::Transform();
+                transform = new Component::Transform();
                 return;
-            case component::ID::SINGLE_SPRITE:
+            case Component::ID::SINGLE_SPRITE:
                 if (single_sprite) { std::cout << "Game Object already has Single Sprite Component" << std::endl; return; }
-                single_sprite = new component::SingleSprite();
+                single_sprite = new Component::SingleSprite();
                 single_sprite->assets = assets;
                 return;
             default:
@@ -36,7 +36,7 @@ namespace engine {
         scene_index = si;
         to_instantiate = ti;
 
-        attachComponent(component::ID::TRANSFORM);
+        attachComponent(Component::ID::TRANSFORM);
 
         onInit();
     }

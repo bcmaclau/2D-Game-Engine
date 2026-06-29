@@ -1,12 +1,12 @@
 #pragma once
 
+#include "renderer/AssetManager.h"
+#include "renderer/SpriteRenderer.h"
+#include "renderer/Camera2D.h"
+
 #include <vector>
 
 namespace engine {
-
-    class AssetManager;
-    class SpriteRenderer;
-    class Camera2D;
 
     class BaseGameObject;
 

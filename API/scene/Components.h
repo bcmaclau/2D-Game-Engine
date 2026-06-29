@@ -1,12 +1,11 @@
 #pragma once
 
-#include "engine/scene/BaseGameObject.h"
-#include "engine/math/Vector.h"
+#include "scene/BaseGameObject.h"
+#include "renderer/AssetManager.h"
+#include "renderer/Texture.h"
+#include "math/Vector.h"
 
 namespace engine::Component {
-
-    class AssetManager;
-    class Texture;
 
     enum class ID {
         TRANSFORM,

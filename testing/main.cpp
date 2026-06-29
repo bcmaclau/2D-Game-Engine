@@ -9,9 +9,9 @@ public:
     void onInit() override {
         spawn = 0;
 
-        transform->setPosition({ 100.0f, 100.0f });
+        transform->setPosition(engine::Vec2(100.0f, 100.0f));
 
-        attachComponent(engine::component::ID::SINGLE_SPRITE);
+        attachComponent(engine::Component::ID::SINGLE_SPRITE);
         single_sprite->setTexture("assets/sprites/awesomeface.png");
         single_sprite->setDimensions({ 100.0f, 100.0f });
     }
@@ -21,7 +21,7 @@ public:
             if (spawn == 0) {
                 BaseGameObject* obj = instantiateOther<AwesomeFace>();
                 obj->transform->setPosition(transform->getPosition());
-                obj->transform->move({ 100.0f, 0.0f });
+                obj->transform->move(engine::Vec2(100.0f, 0.0f));
             }
             else if (spawn == 2) {
                 destroySelf();

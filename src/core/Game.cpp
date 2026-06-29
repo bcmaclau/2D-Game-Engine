@@ -1,6 +1,6 @@
-#include "engine/core/Game.h"
+#include "core/Game.h"
 
-#include "engine/input/Input.h"
+#include "input/Input.h"
 
 #include <iostream>
 
@@ -10,12 +10,12 @@ namespace engine {
         init(first_scene);
 
         // main game loop
-        while (running && !window.shouldClose() && !active_scene->end_game) {
+        while (running && !window->shouldClose() && !active_scene->end_game) {
             // simple pipeline: 
             // get time -> get user input -> update game -> render game
-            time.update();
-            window.pollEvents();
-            update(time.getDeltaTime());
+            time->update();
+            window->pollEvents();
+            update(time->getDeltaTime());
             render();
 
             if (active_scene->swap_scene) {
@@ -32,17 +32,21 @@ namespace engine {
 
     void Game::init(BaseScene& first_scene) {
         // window initialization
-        if (!window.init(screen_width, screen_height, "testing")) {
+        window = new Window();
+        if (!window->init(screen_width, screen_height, "testing")) {
             std::cout << "Failed to create GLFW window. Shutting Down" << std::endl;
             running = false;
         }
 
         // input initialization
-        Input::init(window.getNativeHandle());
+        Input::init(window->getNativeHandle());
 
         // scene initialization
+        assets = new AssetManager();
         active_scene = &first_scene;
-        active_scene->init(&assets, screen_width, screen_height);
+        active_scene->init(assets, screen_width, screen_height);
+
+        time = new Time();
 
         // user-implemented game init
         onInit();
@@ -65,20 +69,23 @@ namespace engine {
     void Game::render() {
         // render pipline:
         // clear window -> draw to screen -> swap buffers
-        window.clear();
+        window->clear();
 
         onRender();
         active_scene->draw();
 
-        window.swapBuffers();
+        window->swapBuffers();
     }
 
     void Game::shutdown() {
         // shutdown order:
         // game objects, textures, shaders, then window last
         onShutdown();
-        assets.clear();
-        window.shutdown();
+        assets->clear();
+        delete assets;
+        window->shutdown();
+        delete window;
+        delete time;
     }
 
     void Game::loadNewScene() {
@@ -86,7 +93,7 @@ namespace engine {
         if (!first_scene) { delete active_scene; }
         else { first_scene = false; }
         active_scene = active_scene->new_scene;
-        active_scene->init(&assets, screen_width, screen_height);
+        active_scene->init(assets, screen_width, screen_height);
     }
 
 }

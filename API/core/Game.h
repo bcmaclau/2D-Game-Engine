@@ -1,11 +1,11 @@
 #pragma once
 
-namespace engine {
+#include "core/Window.h"
+#include "core/Time.h"
+#include "renderer/AssetManager.h"
+#include "scene/BaseScene.h"
 
-    class Window;
-    class Time;
-    class AssetManager;
-    class BaseScene;
+namespace engine {
 
     class Game {
     public:    
@@ -25,8 +25,6 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
-
-
         void init(BaseScene& first_scene);
 
         bool running;
