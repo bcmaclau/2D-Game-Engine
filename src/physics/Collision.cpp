@@ -2,7 +2,7 @@
 
 #include "scene/BaseScene.h"
 #include "scene/BaseGameObject.h"
-#include "scene/Components.h"
+#include "scene/component/Components.h"
 
 #include <iostream>
 
