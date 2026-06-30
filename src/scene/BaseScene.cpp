@@ -2,6 +2,7 @@
 
 #include "scene/BaseGameObject.h"
 #include "scene/Components.h"
+#include "physics/Collision.h"
 
 #include <iostream>
 
@@ -33,16 +34,47 @@ namespace engine {
         sprite_renderer->init();
         camera = new Camera2D();
         camera->init(screen_width, screen_height);
+        Collision::init(&physics_objects, &collisions);
         onInit();
     }
 
     void BaseScene::update(float dt) {
+        handlePhysics();
+
         onUpdate(dt);
 
         BaseGameObject* obj = nullptr;
         for (int i = 0; i < game_objects.size(); i++) {
             obj = game_objects[i];
             if (obj->alive) { obj->update(dt); }
+        }
+    }
+
+    void BaseScene::handlePhysics() {
+        // handle collisions
+        Collision::updateCollisions();
+        Collision::Result* result = nullptr;
+        for (int i = 0; i < collisions.size(); i++) {
+            result = collisions[i];
+            
+            Collision::Side opposite_side;
+            switch (result->side) {
+                case Collision::Side::TOP:
+                    opposite_side = Collision::Side::BOTTOM;
+                    break;
+                case Collision::Side::BOTTOM:
+                    opposite_side = Collision::Side::TOP;
+                    break;
+                case Collision::Side::LEFT:
+                    opposite_side = Collision::Side::RIGHT;
+                    break;
+                default:
+                    opposite_side = Collision::Side::LEFT;
+                    break;
+            }
+            
+            result->a->onCollision(result->b, result->side, result->penetration);
+            result->b->onCollision(result->a, opposite_side, result->penetration);
         }
     }
 
@@ -91,6 +123,8 @@ namespace engine {
         }
         for (int i = 0; i < to_destroy.size(); i++) { destroy(to_destroy[i]); }
 
+        Collision::endFrame();
+
         sprite_renderer->endFrame();
     } 
 
@@ -104,11 +138,12 @@ namespace engine {
             delete obj;
         }
         game_objects.clear();
+        physics_objects.clear();
 
         sprite_renderer->shutdown();
         delete sprite_renderer;
-
         delete camera;
+        Collision::shutdown();
     }
 
 }

@@ -2,41 +2,84 @@
 
 #include <iostream>
 
-class AwesomeFace : public engine::BaseGameObject {
+class TestPlayer : public engine::BaseGameObject {
 public:
-    int spawn;
+    float speed;
 
     void onInit() override {
-        spawn = 0;
+        speed = 3.0f;
 
-        transform->setPosition(engine::Vec2(100.0f, 100.0f));
+        transform->setPosition({ 100.0f, 100.0f });
 
         attachComponent(engine::Component::ID::SINGLE_SPRITE);
         single_sprite->setTexture("assets/sprites/awesomeface.png");
         single_sprite->setDimensions({ 100.0f, 100.0f });
+
+        attachComponent(engine::Component::ID::BOX_COLLIDER);
+        box_collider->setDimensions({ 100.0f, 100.0f });
     }
 
-    void onUpdate(float dt) override {
-        if (engine::Input::isKeyPushed(engine::Input::Key::SPACE)) {
-            if (spawn == 0) {
-                BaseGameObject* obj = instantiateOther<AwesomeFace>();
-                obj->transform->setPosition(transform->getPosition());
-                obj->transform->move(engine::Vec2(100.0f, 0.0f));
-            }
-            else if (spawn == 2) {
-                destroySelf();
-            }
-            spawn++;
+    void onFixedUpdate() override {
+        if (engine::Input::isKeyHeld(engine::Input::Key::W)) {
+            transform->move({ 0.0f, speed });
         }
+        if (engine::Input::isKeyHeld(engine::Input::Key::S)) {
+            transform->move({ 0.0f, -speed });
+        }
+        if (engine::Input::isKeyHeld(engine::Input::Key::A)) {
+            transform->move({ -speed, 0.0f });
+        }
+        if (engine::Input::isKeyHeld(engine::Input::Key::D)) {
+            transform->move({ speed, 0.0f });
+        }
+    }
+
+    void onCollision(BaseGameObject* other, engine::Collision::Side side, float penetration) override {
+        switch (side) {
+            case engine::Collision::Side::TOP:
+                std::cout << "top" << std::endl;
+                break;
+            case engine::Collision::Side::BOTTOM:
+                std::cout << "bottom" << std::endl;
+                break;
+            case engine::Collision::Side::LEFT:
+                std::cout << "left" << std::endl;
+                break;
+            default:
+                std::cout << "right" << std::endl;
+                break;
+        }
+    }
+};
+
+class TestBlock : public engine::BaseGameObject {
+public:
+    void onInit() override {
+        transform->setPosition({ 300.0f, 300.0f });
+
+        attachComponent(engine::Component::ID::SINGLE_SPRITE);
+        single_sprite->setTexture("assets/sprites/awesomeface.png");
+        single_sprite->setDimensions({ 100.0f, 100.0f });
+
+        attachComponent(engine::Component::ID::BOX_COLLIDER);
+        box_collider->setDimensions({ 100.0f, 100.0f });
     }
 };
 
 class TestScene : public engine::BaseScene {
 public:
-    AwesomeFace* awesome_face;
+    TestPlayer* player;
+    TestBlock* block;
 
     void onInit() override {
-        awesome_face = instantiate<AwesomeFace>();
+        player = instantiate<TestPlayer>();
+        block = instantiate<TestBlock>();
+    }
+
+    void onUpdate(float dt) override {
+        if (engine::Input::isKeyHeld(engine::Input::Key::ESCAPE)) {
+            endGame();
+        }
     }
 };
 

@@ -10,7 +10,8 @@ namespace engine::Component {
 
     enum class ID {
         TRANSFORM,
-        SINGLE_SPRITE
+        SINGLE_SPRITE,
+        BOX_COLLIDER
     };
 
     class Transform {
@@ -39,6 +40,9 @@ namespace engine::Component {
         friend class engine::BaseGameObject;
     
     public:
+        SingleSprite() : assets(nullptr), texture(nullptr), dimensions(Vec2(1.0f, 1.0f)) {}
+        ~SingleSprite() {}
+
         Texture* getTexture() const;
         void setTexture(const char* path);
         
@@ -49,6 +53,25 @@ namespace engine::Component {
         AssetManager* assets;
         Texture* texture;
         Vec2 dimensions;
+    };
+
+    class BoxCollider {
+        friend class engine::BaseGameObject;
+
+    public:
+        BoxCollider() : dimensions(Vec2(1.0f, 1.0f)) {}
+        ~BoxCollider() {}
+
+        Vec2 getDimensions() const;
+        void setDimensions(const Vec2& d);
+
+        Vec2 getMin() const;
+        Vec2 getMax() const;
+
+    private:
+        Transform* transform;
+        Vec2 dimensions;
+        float half_x, half_y;
     };
 
 }

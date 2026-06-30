@@ -3,6 +3,7 @@
 #include "renderer/AssetManager.h"
 #include "renderer/SpriteRenderer.h"
 #include "renderer/Camera2D.h"
+#include "physics/Collision.h"
 
 #include <vector>
 
@@ -14,7 +15,8 @@ namespace engine {
         friend class Game;
 
     public:
-        BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false) {}
+        BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false),
+        assets(nullptr), sprite_renderer(nullptr), camera(nullptr) {}
         virtual ~BaseScene() = default;
 
         template <typename T>
@@ -32,7 +34,7 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, game_objects.size(), &to_instantiate);
+            obj->init(assets, game_objects.size(), &to_instantiate, &physics_objects);
             game_objects.push_back(obj);
             return obj;
         }
@@ -48,6 +50,7 @@ namespace engine {
     private:
         void init(AssetManager* a, int screen_width, int screen_height);
         void update(float dt);
+        void handlePhysics();
         void fixedUpdate();
         void draw();
         void endFrame();
@@ -65,6 +68,9 @@ namespace engine {
 
         std::vector<BaseGameObject*> game_objects;
         std::vector<BaseGameObject*> to_instantiate;
+
+        std::vector<BaseGameObject*> physics_objects;
+        std::vector<Collision::Result*> collisions;
     };
 
 }

@@ -11,6 +11,11 @@ namespace engine {
         enum class ID;
         class Transform;
         class SingleSprite;
+        class BoxCollider;
+    }
+
+    namespace Collision {
+        enum class Side;
     }
 
     class BaseGameObject {
@@ -18,7 +23,8 @@ namespace engine {
 
     public:
         BaseGameObject() : alive(true), scene_index(0),
-        transform(nullptr), single_sprite(nullptr) {}
+        transform(nullptr), single_sprite(nullptr), box_collider(nullptr),
+        assets(nullptr), to_instantiate(nullptr), physics_objects(nullptr) {}
         virtual ~BaseGameObject() {}
 
         void attachComponent(Component::ID component_id);
@@ -38,6 +44,8 @@ namespace engine {
         // --- Components ---
         Component::Transform* transform;
         Component::SingleSprite* single_sprite;
+        Component::BoxCollider* box_collider;
+        virtual void onCollision(BaseGameObject* other, Collision::Side side, float penetration) {}
 
     protected:
         virtual void onInit() {}
@@ -46,7 +54,7 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
-        void init(AssetManager* a, size_t si, std::vector<BaseGameObject*>* ti);
+        void init(AssetManager* a, size_t si, std::vector<BaseGameObject*>* ti, std::vector<BaseGameObject*>* po);
         void update(float dt);
         void fixedUpdate();
         void shutdown();
@@ -55,6 +63,7 @@ namespace engine {
         size_t scene_index;
         AssetManager* assets;
         std::vector<BaseGameObject*>* to_instantiate;
+        std::vector<BaseGameObject*>* physics_objects;
     };
 
 }

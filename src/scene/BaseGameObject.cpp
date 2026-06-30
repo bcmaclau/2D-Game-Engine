@@ -17,6 +17,11 @@ namespace engine {
                 single_sprite = new Component::SingleSprite();
                 single_sprite->assets = assets;
                 return;
+            case Component::ID::BOX_COLLIDER:
+                if (box_collider) { std::cout << "Game Object already has Box Collider Component" << std::endl; return; }
+                box_collider = new Component::BoxCollider();
+                box_collider->transform = transform;
+                return;
             default:
                 std::cout << "Invalid Component ID" << std::endl;
                 return;
@@ -31,14 +36,17 @@ namespace engine {
         obj->alive = false;
     }
 
-    void BaseGameObject::init(AssetManager* a, size_t si, std::vector<BaseGameObject*>* ti) {
+    void BaseGameObject::init(AssetManager* a, size_t si, std::vector<BaseGameObject*>* ti, std::vector<BaseGameObject*>* po) {
         assets = a;
         scene_index = si;
         to_instantiate = ti;
+        physics_objects = po;
 
         attachComponent(Component::ID::TRANSFORM);
 
         onInit();
+
+        if (box_collider) { physics_objects->push_back(this); }
     }
 
     void BaseGameObject::update(float dt) {
