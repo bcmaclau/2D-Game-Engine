@@ -33,7 +33,7 @@ namespace engine {
         glBindVertexArray(VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -57,14 +57,29 @@ namespace engine {
         glBindVertexArray(VAO);
     }
 
-    void SpriteRenderer::draw(Texture* texture, const glm::vec2& position, const glm::vec2& size, float rotation) {
+    void SpriteRenderer::draw(Component::Sprite* sprite, Component::Transform* transform) {
+        glm::vec2 pos = glm::vec2(transform->getPosition().x, transform->getPosition().y);
+        glm::vec2 dim = glm::vec2(sprite->active_sprite->dimensions.x, sprite->active_sprite->dimensions.y);
+
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(position, 0.0f));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(size / 2.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(pos, 0.0f));
+        model = glm::rotate(model, glm::radians(transform->getRotation()), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(dim / 2.0f, 1.0f));
+
+        float min_tex_x = sprite->active_sprite->current_frame * sprite->active_sprite->frame_width;
+        float max_tex_x = min_tex_x + sprite->active_sprite->frame_width;
+
+        float vertices[] = {
+            // 2 normal coords, 2 tex coords
+            -1.0f, 1.0f, min_tex_x, 1.0f, // top left
+            -1.0f, -1.0f, min_tex_x, 0.0f, // bottom left
+            1.0f, 1.0f, max_tex_x, 1.0f, // top right
+            1.0f, -1.0f, max_tex_x, 0.0f // bottom right
+        };
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
         shader.setMat4("model", &model);
-        texture->bind();
+        sprite->active_sprite->texture->bind();
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }

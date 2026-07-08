@@ -19,6 +19,13 @@ namespace engine {
 
     class BaseGameObject;
 
+    template <typename T>
+    class PointerList {
+    public:
+        void push_back(T* data);
+        unsigned int size() const;
+    };
+
     namespace Collision {
         enum class Side {
             TOP, BOTTOM, LEFT, RIGHT
@@ -49,8 +56,8 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, game_objects.size(), &to_instantiate, &physics_objects);
-            game_objects.push_back(obj);
+            obj->init(assets, game_objects->size(), to_instantiate, physics_objects);
+            game_objects->push_back(obj);
             return obj;
         }
         void destroy(BaseGameObject* obj);
@@ -80,11 +87,11 @@ namespace engine {
         SpriteRenderer* sprite_renderer;
         Camera2D* camera;
 
-        std::vector<BaseGameObject*> game_objects;
-        std::vector<BaseGameObject*> to_instantiate;
+        PointerList<BaseGameObject>* game_objects;
+        PointerList<BaseGameObject>* to_instantiate;
 
-        std::vector<BaseGameObject*> physics_objects;
-        std::vector<Collision::Result*> collisions;
+        PointerList<BaseGameObject>* physics_objects;
+        PointerList<Collision::Result>* collisions;
     };
 
 }

@@ -10,7 +10,7 @@ namespace engine::Component {
         friend class engine::BaseGameObject;
 
     public:
-        BoxCollider() : dimensions(Vec2(1.0f, 1.0f)) {}
+        BoxCollider() : dimensions(Vec2(1.0f, 1.0f)), phys_id(0) {}
         ~BoxCollider() {}
 
         Vec2 getDimensions() const;
@@ -23,6 +23,7 @@ namespace engine::Component {
         Transform* transform;
         Vec2 dimensions;
         float half_x, half_y;
+        int phys_id;
     };
 
 }

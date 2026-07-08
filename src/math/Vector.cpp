@@ -36,8 +36,8 @@ namespace engine {
         return *this;
     }
 
-    float Vec2::magnitude(const Vec2& vec) const { return std::sqrtf(vec.x * vec.x + vec.y * vec.y); }
+    float Vec2::magnitude(const Vec2& vec) { return std::sqrtf(vec.x * vec.x + vec.y * vec.y); }
 
-    Vec2 Vec2::normalize(const Vec2& vec) const { return vec / magnitude(vec); }
+    Vec2 Vec2::normalize(const Vec2& vec) { return vec / magnitude(vec); }
 
 }

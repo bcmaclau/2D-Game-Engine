@@ -6,12 +6,13 @@
 
 #include <iostream>
 
-std::vector<engine::BaseGameObject*>* engine::Collision::physics_objects = nullptr;
-std::vector<engine::Collision::Result*>* engine::Collision::collisions = nullptr;
+engine::PointerList<engine::BaseGameObject>* engine::Collision::physics_objects = nullptr;
+engine::PointerList<engine::Collision::Result>* engine::Collision::collisions = nullptr;
+
 
 namespace engine {
 
-    void Collision::init(std::vector<BaseGameObject*>* po, std::vector<Result*>* c) {
+    void Collision::init(PointerList<BaseGameObject>* po, PointerList<Result>* c) {
         physics_objects = po;
         collisions = c;
     }
@@ -23,8 +24,8 @@ namespace engine {
         BaseGameObject* a, * b;
         for (int i = 0; i < (int)physics_objects->size() - 1; i++) {
             for (int j = i + 1; j < (int)physics_objects->size(); j++) {
-                a = physics_objects->at(i);
-                b = physics_objects->at(j);
+                a = (*physics_objects)[i];
+                b = (*physics_objects)[j];
 
                 // Collision Detected
                 if (colliding(a, b)) {

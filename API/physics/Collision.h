@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include "container/PointerList.h"
 
 namespace engine {
 
@@ -19,7 +19,7 @@ namespace engine {
             float penetration;
         };
 
-        static void init(std::vector<BaseGameObject*>* po, std::vector<Result*>* c);
+        static void init(PointerList<BaseGameObject>* po, PointerList<Result>* c);
         static void updateCollisions();
         static void endFrame();
         static void shutdown();
@@ -29,8 +29,8 @@ namespace engine {
 
         static bool colliding(BaseGameObject* a, BaseGameObject* b);
 
-        static std::vector<BaseGameObject*>* physics_objects;
-        static std::vector<Result*>* collisions;
+        static PointerList<BaseGameObject>* physics_objects;
+        static PointerList<Result>* collisions;
     };
 
 }

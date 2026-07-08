@@ -5,7 +5,9 @@
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"
 #include "renderer/Camera2D.h"
-
+#include "scene/component/Sprite.h"
+#include "scene/component/Transform.h"
+#include "math/Vector.h"
 
 namespace engine {
 
@@ -16,7 +18,7 @@ namespace engine {
 
         bool init();
         void beginFrame(Camera2D* camera);
-        void draw(Texture* texture, const glm::vec2& position, const glm::vec2& size, float rotation = 0.0f);
+        void draw(Component::Sprite* sprite, Component::Transform* transform);
         void endFrame();
         void shutdown();
 

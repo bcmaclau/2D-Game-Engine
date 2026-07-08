@@ -13,20 +13,20 @@ namespace engine {
         while (running && !window->shouldClose() && !active_scene->end_game) {
             // simple pipeline: 
             // get time -> get user input -> update game -> render game
-            time->update();
             window->pollEvents();
+            time->update();
             update(time->getDeltaTime());
             render();
-
+            
             if (active_scene->swap_scene) {
                 loadNewScene();
                 //Input::reset_keys();
             }
-
-            active_scene->endFrame();
+            
             Input::endFrame();
+            active_scene->endFrame();
         }
-
+        
         shutdown();
     }
 
