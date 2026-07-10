@@ -3,14 +3,23 @@
 #include <GLFW/glfw3.h>
 
 #include <cstring>
+#include <iostream>
 
 namespace engine {
 
-    bool Input::current_keys[49] = {};
-    bool Input::prev_keys[49] = {};
+    bool Input::current_keys[49] = { false };
+    bool Input::prev_keys[49] = { false };
+    unsigned int Input::screen_height = 0;
+    Vec2 Input::mouse_pos = Vec2(0.0f, 0.0f);
+    bool Input::current_buttons[3] = { false };
+    bool Input::prev_buttons[3] = { false };
 
-    void Input::init(GLFWwindow* window) {
+    void Input::init(GLFWwindow* window, unsigned int sh) {
+        screen_height = sh;
+
         glfwSetKeyCallback(window, Input::keyCallback);
+        glfwSetCursorPosCallback(window, cursorPosCallback);
+        glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
         for (int i = 0; i < 49; i++) {
             current_keys[i] = false;
@@ -22,18 +31,36 @@ namespace engine {
 
     bool Input::isKeyHeld(Key key) { return current_keys[(int)key]; }
 
+    Vec2 Input::getMousePos() { return mouse_pos; }
+
+    bool Input::isMousePushed(Button button) { return current_buttons[(int)button] && !prev_buttons[(int)button]; }
+
+    bool Input::isMouseHeld(Button button) { return current_buttons[(int)button]; }
+
     void Input::endFrame() {
         std::memcpy(prev_keys, current_keys, sizeof(current_keys));
+        std::memcpy(prev_buttons, current_buttons, sizeof(current_buttons));
     }
 
     void Input::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        Key k = fromGLFW(key);
+        Key k = keyFromGLFW(key);
         if (k == Key::UNKNOWN) { return; }
         if (action == GLFW_PRESS) { current_keys[(int)k] = true; }
         if (action == GLFW_RELEASE) { current_keys[(int)k] = false; }
     }
 
-    Input::Key Input::fromGLFW(int key) {
+    void Input::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+        mouse_pos = Vec2((float)xpos, (float)screen_height - (float)ypos);
+    }
+
+    void Input::mouseButtonCallback(GLFWwindow* window, int action, int button, int mods) {
+        Button b = buttonFromGLFW(button);
+        if (b == Button::UNKNOWN) { return; }
+        if (action == GLFW_PRESS) { current_buttons[(int)b] = true; }
+        if (action == GLFW_RELEASE) { current_buttons[(int)b] = false; }
+    }
+
+    Input::Key Input::keyFromGLFW(int key) {
         switch (key) {
             case GLFW_KEY_SPACE: return Key::SPACE;
             case GLFW_KEY_ENTER: return Key::ENTER;
@@ -85,6 +112,15 @@ namespace engine {
             case GLFW_KEY_LEFT_CONTROL: return Key::LEFT_CONTROL;
             case GLFW_KEY_RIGHT_CONTROL: return Key::RIGHT_CONTROL;
             default: return Key::UNKNOWN;
+        }
+    }
+
+    Input::Button Input::buttonFromGLFW(int button) {
+        switch (button) {
+            case GLFW_MOUSE_BUTTON_LEFT: return Button::LEFT;
+            case GLFW_MOUSE_BUTTON_RIGHT: return Button::RIGHT;
+            case GLFW_MOUSE_BUTTON_MIDDLE: return Button::MIDDLE;
+            default: return Button::UNKNOWN;
         }
     }
 

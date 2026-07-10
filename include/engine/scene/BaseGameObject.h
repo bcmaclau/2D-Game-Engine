@@ -25,7 +25,7 @@ namespace engine {
         friend class BaseScene;
 
     public:
-        BaseGameObject() : alive(true), scene_index(0),
+        BaseGameObject() : alive(true), scene_index(0), screen_width(0), screen_height(0),
         transform(nullptr), sprite(nullptr), box_collider(nullptr),
         assets(nullptr), to_instantiate(nullptr), physics_objects(nullptr) {}
         virtual ~BaseGameObject() {}
@@ -37,12 +37,14 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, 0, to_instantiate, physics_objects);
+            obj->init(assets, screen_width, screen_height, 0, to_instantiate, physics_objects);
             to_instantiate->push_back(obj);
             return obj;
         }
         void destroySelf();
         void destroyOther(BaseGameObject* obj);
+
+        Vec2 getScreenDimensions() const;
 
         void setTag(int t);
         int getTag() const;
@@ -60,11 +62,12 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
-        void init(AssetManager* a, unsigned int si, PointerList<BaseGameObject>* ti, PointerList<BaseGameObject>* po);
+        void init(AssetManager* a, unsigned int sw, unsigned int sh, unsigned int si, PointerList<BaseGameObject>* ti, PointerList<BaseGameObject>* po);
         void update(float dt);
         void fixedUpdate();
         void shutdown();
 
+        unsigned int screen_width, screen_height;
         bool alive;
         unsigned int scene_index;
         AssetManager* assets;

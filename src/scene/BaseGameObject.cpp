@@ -38,11 +38,15 @@ namespace engine {
         obj->alive = false;
     }
 
+    Vec2 BaseGameObject::getScreenDimensions() const { return Vec2((float)screen_width, (float)screen_height); }
+
     void BaseGameObject::setTag(int t) { tag = t; }
     int BaseGameObject::getTag() const { return tag; }
 
-    void BaseGameObject::init(AssetManager* a, unsigned int si, PointerList<BaseGameObject>* ti, PointerList<BaseGameObject>* po) {
+    void BaseGameObject::init(AssetManager* a, unsigned int sw, unsigned int sh, unsigned int si, PointerList<BaseGameObject>* ti, PointerList<BaseGameObject>* po) {
         assets = a;
+        screen_width = sw;
+        screen_height = sh;
         scene_index = si;
         to_instantiate = ti;
         physics_objects = po;

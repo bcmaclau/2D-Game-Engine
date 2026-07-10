@@ -1,5 +1,7 @@
 #pragma once
 
+#include "engine/math/Vector.h"
+
 struct GLFWwindow;
 
 namespace engine {
@@ -17,9 +19,18 @@ namespace engine {
             LEFT_SHIFT, RIGHT_SHIFT, LEFT_CONTROL, RIGHT_CONTROL
         };
 
+        enum class Button {
+            UNKNOWN = -1,
+            LEFT, RIGHT, MIDDLE
+        };
+
         static bool isKeyPushed(Key key);
         static bool isKeyHeld(Key key);
         
+        static Vec2 getMousePos();
+        static bool isMousePushed(Button button);
+        static bool isMouseHeld(Button button);
+
     private:
         Input() {}
         

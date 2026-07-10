@@ -17,6 +17,8 @@ namespace engine {
 
         void run(BaseScene& first_scene);
 
+        void setWindowDimensions(unsigned int w, unsigned int h);
+
     protected:
         virtual void onInit() {}
         virtual void onUpdate(float dt) {}
@@ -40,7 +42,7 @@ namespace engine {
         bool first_scene;
         void loadNewScene();
 
-        int screen_width, screen_height;
+        unsigned int screen_width, screen_height;
         Window* window;
         Time* time;
         AssetManager* assets;

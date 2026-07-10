@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math/Vector.h"
+
 struct GLFWwindow;
 
 namespace engine {
@@ -17,20 +19,37 @@ namespace engine {
             LEFT_SHIFT, RIGHT_SHIFT, LEFT_CONTROL, RIGHT_CONTROL
         };
 
+        enum class Button {
+            UNKNOWN = -1,
+            LEFT, RIGHT, MIDDLE
+        };
+
         static bool isKeyPushed(Key key);
         static bool isKeyHeld(Key key);
+
+        static Vec2 getMousePos();
+        static bool isMousePushed(Button button);
+        static bool isMouseHeld(Button button);
         
     private:
         Input() {}
         
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static Key keyFromGLFW(int key);
         
-        static Key fromGLFW(int key);
-        
+        static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+        static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        static Button buttonFromGLFW(int button);
+
         static bool current_keys[49];
         static bool prev_keys[49];
         
-        static void init(GLFWwindow* window);
+        static unsigned int screen_height;
+        static Vec2 mouse_pos;
+        static bool current_buttons[3];
+        static bool prev_buttons[3];
+
+        static void init(GLFWwindow* window, unsigned int sh);
         static void endFrame();
     };
 

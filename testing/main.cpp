@@ -1,5 +1,7 @@
 #include <engine/Engine.h>
 
+#include <iostream>
+
 using namespace engine;
 
 class Brick : public BaseGameObject {
@@ -169,6 +171,8 @@ int main() {
     Breakout first_scene;
 
     engine::Game game;
+    game.setWindowDimensions(800, 600);
+
     game.run(first_scene);
 
     return 0;

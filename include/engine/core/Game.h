@@ -15,6 +15,8 @@ namespace engine {
         screen_width(800), screen_height(600) {}
         virtual ~Game() {}
 
+        void setWindowDimensions(unsigned int w, unsigned int h);
+
         void run(BaseScene& first_scene);
 
     protected:
@@ -25,8 +27,6 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
-
-
         void init(BaseScene& first_scene);
 
         bool running;

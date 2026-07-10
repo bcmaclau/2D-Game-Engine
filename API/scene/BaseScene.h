@@ -42,11 +42,13 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, game_objects->size(), to_instantiate, physics_objects);
+            obj->init(assets, screen_width, screen_height, game_objects->size(), to_instantiate, physics_objects);
             game_objects->push_back(obj);
             return obj;
         }
         void destroy(BaseGameObject* obj);
+
+        Vec2 getScreenDimensions() const;
 
     protected:
         // user implemented functions
@@ -56,7 +58,7 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
-        void init(AssetManager* a, int screen_width, int screen_height);
+        void init(AssetManager* a, unsigned int sw, unsigned int sh);
         void update(float dt);
         void handlePhysics();
         void fixedUpdate();
@@ -66,6 +68,7 @@ namespace engine {
 
         void dynamicInstantiate(BaseGameObject* obj);
 
+        unsigned int screen_width, screen_height;
         bool swap_scene;
         BaseScene* new_scene;
         bool end_game;

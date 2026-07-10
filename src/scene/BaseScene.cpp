@@ -28,8 +28,12 @@ namespace engine {
         game_objects->pop_back();
     }
 
-    void BaseScene::init(AssetManager* a, int screen_width, int screen_height) {
+    Vec2 BaseScene::getScreenDimensions() const { return Vec2((float)screen_width, (float)screen_height); }
+
+    void BaseScene::init(AssetManager* a, unsigned int sw, unsigned int sh) {
         assets = a;
+        screen_width = sw;
+        screen_height = sh;
         sprite_renderer = new SpriteRenderer();
         sprite_renderer->init();
         camera = new Camera2D();

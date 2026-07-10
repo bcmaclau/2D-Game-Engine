@@ -30,6 +30,11 @@ namespace engine {
         shutdown();
     }
 
+    void Game::setWindowDimensions(unsigned int w, unsigned int h) {
+        screen_width = w;
+        screen_height = h;
+    }
+
     void Game::init(BaseScene& first_scene) {
         // window initialization
         window = new Window();
@@ -39,7 +44,7 @@ namespace engine {
         }
 
         // input initialization
-        Input::init(window->getNativeHandle());
+        Input::init(window->getNativeHandle(), screen_height);
 
         // scene initialization
         assets = new AssetManager();
