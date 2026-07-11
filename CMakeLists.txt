@@ -45,5 +45,7 @@ target_link_libraries(Engine2D PUBLIC
     glm::glm
 )
 
-add_subdirectory(testing/Breakout)
-add_subdirectory(testing/SpaceInvaders)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    add_subdirectory(testing/Breakout)
+    add_subdirectory(testing/SpaceInvaders)
+endif()
