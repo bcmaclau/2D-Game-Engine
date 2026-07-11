@@ -15,6 +15,7 @@ namespace engine {
         screen_width(800), screen_height(600) {}
         virtual ~Game() {}
 
+        void setTitle(const char* t);
         void setWindowDimensions(unsigned int w, unsigned int h);
 
         void run(BaseScene& first_scene);
@@ -27,6 +28,7 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
+        char title[64] = { '\0' };
         void init(BaseScene& first_scene);
 
         bool running;

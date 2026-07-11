@@ -45,4 +45,4 @@ target_link_libraries(Engine2D PUBLIC
     glm::glm
 )
 
-add_subdirectory(game)
+add_subdirectory(testing/Breakout)

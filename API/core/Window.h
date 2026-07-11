@@ -6,10 +6,10 @@ namespace engine {
 
     class Window {
     public:
-        Window() {}
+        Window() : width(0), height(0) {}
         ~Window() {}
 
-        bool init(int width, int height, const char* title);
+        bool init(unsigned int width, unsigned int height, const char* title);
         void shutdown();
 
         bool shouldClose();
@@ -24,8 +24,8 @@ namespace engine {
 
     private:
         GLFWwindow* window;
-        int width = 0;
-        int height = 0;
+        unsigned int width;
+        unsigned int height;
     };
 
 }

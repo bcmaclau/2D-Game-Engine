@@ -17,6 +17,7 @@ namespace engine {
 
         void run(BaseScene& first_scene);
 
+        void setTitle(const char* t);
         void setWindowDimensions(unsigned int w, unsigned int h);
 
     protected:
@@ -27,6 +28,7 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
+        char title[64] = { '\0' };
         void init(BaseScene& first_scene);
 
         bool running;

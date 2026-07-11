@@ -171,6 +171,7 @@ int main() {
     Breakout first_scene;
 
     engine::Game game;
+    game.setTitle("Breakout");
     game.setWindowDimensions(800, 600);
 
     game.run(first_scene);

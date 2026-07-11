@@ -3,6 +3,7 @@
 #include "input/Input.h"
 
 #include <iostream>
+#include <cstring>
 
 namespace engine {
 
@@ -30,6 +31,13 @@ namespace engine {
         shutdown();
     }
 
+    void Game::setTitle(const char* t) {
+        if (strlen(t) > 64) { std::cout << "Title must be no longer than 64 characters" << std::endl; }
+
+        memset(title, '\0', 64);
+        memcpy(title, t, strlen(t));
+    }
+
     void Game::setWindowDimensions(unsigned int w, unsigned int h) {
         screen_width = w;
         screen_height = h;
@@ -38,7 +46,7 @@ namespace engine {
     void Game::init(BaseScene& first_scene) {
         // window initialization
         window = new Window();
-        if (!window->init(screen_width, screen_height, "testing")) {
+        if (!window->init(screen_width, screen_height, title)) {
             std::cout << "Failed to create GLFW window. Shutting Down" << std::endl;
             running = false;
         }
