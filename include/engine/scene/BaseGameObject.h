@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include "engine/math/Vector.h"
+#include "engine/container/PointerList.h"
 
 namespace engine {
     

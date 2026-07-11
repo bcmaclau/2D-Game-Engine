@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include "engine/math/Vector.h"
+#include "engine/container/PointerList.h"
 
 namespace engine {
 
@@ -18,13 +19,6 @@ namespace engine {
     class Camera2D;
 
     class BaseGameObject;
-
-    template <typename T>
-    class PointerList {
-    public:
-        void push_back(T* data);
-        unsigned int size() const;
-    };
 
     namespace Collision {
         enum class Side {
