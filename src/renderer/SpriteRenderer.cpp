@@ -7,7 +7,7 @@
 namespace engine {
 
     bool SpriteRenderer::init() {
-        if (!shader.init("assets/shaders/test.vert", "assets/shaders/test.frag")) { return false; }
+        if (!shader.init("assets/shaders/default.vert", "assets/shaders/default.frag")) { return false; }
 
         float vertices[] = {
             // 2 normal coords, 2 tex coords

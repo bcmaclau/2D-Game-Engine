@@ -146,9 +146,9 @@ public:
 
 class Breakout : public BaseScene {
 public:
-    Brick* bricks[8][14];
     Ball* ball;
     Paddle* paddle;
+    Brick* bricks[8][14];
 
     void onInit() override {
         ball = instantiate<Ball>();
