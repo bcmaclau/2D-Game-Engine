@@ -7,6 +7,7 @@ namespace engine::Component {
     void Sprite::init(AssetManager* a) {
         assets = a;
         sprites = new PointerList<Details>;
+        render_layer = RenderLayer::BACKGROUND;
     }
 
     void Sprite::shutdown() {
@@ -87,5 +88,9 @@ namespace engine::Component {
         }
         (*sprites)[id]->current_frame = frame;
     }
+
+    void Sprite::setRenderLayer(RenderLayer layer) { render_layer = layer; }
+
+    Sprite::RenderLayer Sprite::getRenderLayer() const { return render_layer; }
 
 }

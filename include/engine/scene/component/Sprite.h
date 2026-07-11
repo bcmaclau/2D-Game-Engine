@@ -33,6 +33,12 @@ namespace engine::Component {
         void setAnimationInterval(int id, int);
         void setCurrentFrame(int id, int frame);
 
+        enum class RenderLayer {
+            BACKGROUND, ENVIRONMENT, ENTITY, UI
+        };
+        void setRenderLayer(RenderLayer layer);
+        RenderLayer getRenderLayer() const;
+
     private:
         AssetManager* assets;
 

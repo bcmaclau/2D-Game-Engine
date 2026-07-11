@@ -80,6 +80,13 @@ namespace engine {
         PointerList<BaseGameObject>* game_objects;
         PointerList<BaseGameObject>* to_instantiate;
 
+        // Rendering orders
+        PointerList<BaseGameObject>* background;
+        PointerList<BaseGameObject>* environment;
+        PointerList<BaseGameObject>* entity;
+        PointerList<BaseGameObject>* ui;
+        PointerList<BaseGameObject>* reorder;
+
         PointerList<BaseGameObject>* physics_objects;
         PointerList<Collision::Result>* collisions;
     };

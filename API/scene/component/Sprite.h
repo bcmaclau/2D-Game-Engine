@@ -34,6 +34,12 @@ namespace engine::Component {
         void setAnimationInterval(int id, int interval);
         void setCurrentFrame(int id, int frame);
 
+        enum class RenderLayer {
+            BACKGROUND, ENVIRONMENT, ENTITY, UI
+        };
+        void setRenderLayer(RenderLayer layer);
+        RenderLayer getRenderLayer() const;
+
     private:
         AssetManager* assets;
 
@@ -49,6 +55,7 @@ namespace engine::Component {
         int active_id;
         Details* active_sprite;
         PointerList<Details>* sprites;
+        RenderLayer render_layer;
 
         void init(AssetManager* a);
         void shutdown();

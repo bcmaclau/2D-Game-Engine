@@ -46,3 +46,4 @@ target_link_libraries(Engine2D PUBLIC
 )
 
 add_subdirectory(testing/Breakout)
+add_subdirectory(testing/SpaceInvaders)
