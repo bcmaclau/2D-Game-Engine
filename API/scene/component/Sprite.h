@@ -21,7 +21,7 @@ namespace engine::Component {
         friend class engine::SpriteRenderer;
     
     public:
-        Sprite() : active_id(0), active_sprite(nullptr), sprites(nullptr) {}
+        Sprite() : active_id(0), active_sprite(nullptr), sprites(nullptr), render_layer(RenderLayer::BACKGROUND), layer_index(0), layer_set(false) {}
         ~Sprite() {}
 
         int addSprite(const char* path);
@@ -29,7 +29,6 @@ namespace engine::Component {
 
         Vec2 getDimensions(int id) const;
         void setDimensions(int id, const Vec2& d);
-
         void setNumAnimationFrames(int id, int num_frames);
         void setAnimationInterval(int id, int interval);
         void setCurrentFrame(int id, int frame);
@@ -56,6 +55,8 @@ namespace engine::Component {
         Details* active_sprite;
         PointerList<Details>* sprites;
         RenderLayer render_layer;
+        unsigned int layer_index;
+        bool layer_set;
 
         void init(AssetManager* a);
         void shutdown();

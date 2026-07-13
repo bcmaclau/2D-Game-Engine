@@ -32,7 +32,8 @@ namespace engine {
 
     public:
         BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false),
-        assets(nullptr), sprite_renderer(nullptr), camera(nullptr) {}
+        assets(nullptr), sprite_renderer(nullptr), camera(nullptr),
+        game_objects(nullptr), to_instantiate(nullptr), physics_objects(nullptr), collisions(nullptr) {}
         virtual ~BaseScene() = default;
 
         template <typename T>
@@ -50,8 +51,8 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width, screen_height, game_objects->size(), to_instantiate, physics_objects);
-            game_objects->push_back(obj);
+            obj->init(assets, screen_width, screen_height, game_objects->size(), to_instantiate);
+            to_instantiate->push_back(obj);
             return obj;
         }
         void destroy(BaseGameObject* obj);
@@ -68,12 +69,15 @@ namespace engine {
     private:
         void init(AssetManager* a, unsigned int sw, unsigned int sh);
         void update(float dt);
+        void handlePhysics();
         void fixedUpdate();
         void draw();
         void endFrame();
         void shutdown();
 
-        void dynamicInstantiate(BaseGameObject* obj);
+        void removeFromGO(BaseGameObject* obj, PointerList<BaseGameObject>* list);
+        void removeFromRL(BaseGameObject* obj, PointerList<BaseGameObject>* list);
+        void removeFromPO(BaseGameObject* obj, PointerList<BaseGameObject>* list);
 
         unsigned int screen_width, screen_height;
         bool swap_scene;
@@ -86,6 +90,12 @@ namespace engine {
 
         PointerList<BaseGameObject>* game_objects;
         PointerList<BaseGameObject>* to_instantiate;
+
+        // Rendering orders
+        PointerList<BaseGameObject>* background_layer;
+        PointerList<BaseGameObject>* environment_layer;
+        PointerList<BaseGameObject>* entity_layer;
+        PointerList<BaseGameObject>* ui_layer;
 
         PointerList<BaseGameObject>* physics_objects;
         PointerList<Collision::Result>* collisions;

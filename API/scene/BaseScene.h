@@ -9,10 +9,8 @@
 namespace engine {
 
     namespace Component {
-
         class Sprite;
         class Transform;
-
     }
 
     class BaseGameObject;
@@ -42,8 +40,8 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width, screen_height, game_objects->size(), to_instantiate, physics_objects);
-            game_objects->push_back(obj);
+            obj->init(assets, screen_width, screen_height, game_objects->size(), to_instantiate);
+            to_instantiate->push_back(obj);
             return obj;
         }
         void destroy(BaseGameObject* obj);
@@ -66,7 +64,9 @@ namespace engine {
         void endFrame();
         void shutdown();
 
-        void dynamicInstantiate(BaseGameObject* obj);
+        void removeFromGO(BaseGameObject* obj, PointerList<BaseGameObject>* list);
+        void removeFromRL(BaseGameObject* obj, PointerList<BaseGameObject>* list);
+        void removeFromPO(BaseGameObject* obj, PointerList<BaseGameObject>* list);
 
         unsigned int screen_width, screen_height;
         bool swap_scene;
@@ -81,11 +81,10 @@ namespace engine {
         PointerList<BaseGameObject>* to_instantiate;
 
         // Rendering orders
-        PointerList<BaseGameObject>* background;
-        PointerList<BaseGameObject>* environment;
-        PointerList<BaseGameObject>* entity;
-        PointerList<BaseGameObject>* ui;
-        PointerList<BaseGameObject>* reorder;
+        PointerList<BaseGameObject>* background_layer;
+        PointerList<BaseGameObject>* environment_layer;
+        PointerList<BaseGameObject>* entity_layer;
+        PointerList<BaseGameObject>* ui_layer;
 
         PointerList<BaseGameObject>* physics_objects;
         PointerList<Collision::Result>* collisions;

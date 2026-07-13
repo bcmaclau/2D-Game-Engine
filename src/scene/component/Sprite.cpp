@@ -89,7 +89,12 @@ namespace engine::Component {
         (*sprites)[id]->current_frame = frame;
     }
 
-    void Sprite::setRenderLayer(RenderLayer layer) { render_layer = layer; }
+    void Sprite::setRenderLayer(RenderLayer layer) {
+        if (!layer_set) {
+            render_layer = layer;
+            layer_set = true;
+        }
+    }
 
     Sprite::RenderLayer Sprite::getRenderLayer() const { return render_layer; }
 

@@ -21,8 +21,6 @@ namespace engine {
                 if (box_collider) { std::cout << "Game Object already has Box Collider Component" << std::endl; return; }
                 box_collider = new Component::BoxCollider();
                 box_collider->transform = transform;
-                box_collider->phys_id = physics_objects->size();
-                physics_objects->push_back(this);
                 return;
             default:
                 std::cout << "Invalid Component ID" << std::endl;
@@ -43,13 +41,12 @@ namespace engine {
     void BaseGameObject::setTag(int t) { tag = t; }
     int BaseGameObject::getTag() const { return tag; }
 
-    void BaseGameObject::init(AssetManager* a, unsigned int sw, unsigned int sh, unsigned int si, PointerList<BaseGameObject>* ti, PointerList<BaseGameObject>* po) {
+    void BaseGameObject::init(AssetManager* a, unsigned int sw, unsigned int sh, unsigned int si, PointerList<BaseGameObject>* ti) {
         assets = a;
         screen_width = sw;
         screen_height = sh;
         scene_index = si;
         to_instantiate = ti;
-        physics_objects = po;
 
         attachComponent(Component::ID::TRANSFORM);
 
@@ -75,19 +72,6 @@ namespace engine {
     }
 
     void BaseGameObject::shutdown() {
-        if (transform) { delete transform; }
-        if (sprite) { sprite->shutdown(); delete sprite; }
-        if (box_collider) {
-            // same O(1) removal from physics_objects as scene's game_objects
-            unsigned int last = physics_objects->size() - 1, current = box_collider->phys_id;
-            if (current != last) {
-                (*physics_objects)[last]->box_collider->phys_id = current;
-                physics_objects->swap_indices(current, last);
-            }
-            physics_objects->pop_back();
-            delete box_collider;
-        }
-
         onShutdown();
     }
 
