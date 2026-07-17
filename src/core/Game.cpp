@@ -21,7 +21,6 @@ namespace engine {
             
             if (active_scene->swap_scene) {
                 loadNewScene();
-                //Input::reset_keys();
             }
             
             Input::endFrame();
@@ -36,6 +35,10 @@ namespace engine {
 
         memset(title, '\0', 64);
         memcpy(title, t, strlen(t));
+    }
+
+    void Game::setNumWorldUnitsVert(float n) {
+        screen_units_v = n;
     }
 
     void Game::setWindowDimensions(unsigned int w, unsigned int h) {
@@ -57,7 +60,8 @@ namespace engine {
         // scene initialization
         assets = new AssetManager();
         active_scene = &first_scene;
-        active_scene->init(assets, screen_width, screen_height);
+        std::cout << "game SUV: " << screen_units_v << std::endl;
+        active_scene->init(assets, screen_width, screen_height, screen_units_v);
 
         time = new Time();
 
@@ -106,7 +110,7 @@ namespace engine {
         if (!first_scene) { delete active_scene; }
         else { first_scene = false; }
         active_scene = active_scene->new_scene;
-        active_scene->init(assets, screen_width, screen_height);
+        active_scene->init(assets, screen_width, screen_height, screen_units_v);
     }
 
 }

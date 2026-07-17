@@ -44,14 +44,16 @@ namespace engine {
 
     Vec2 BaseScene::getScreenDimensions() const { return Vec2((float)screen_width, (float)screen_height); }
 
-    void BaseScene::init(AssetManager* a, unsigned int sw, unsigned int sh) {
+    void BaseScene::init(AssetManager* a, unsigned int sw, unsigned int sh, float suv) {
+        std::cout << "Scene SUV: " << suv << std::endl;
+
         assets = a;
         screen_width = sw;
         screen_height = sh;
         sprite_renderer = new SpriteRenderer();
         sprite_renderer->init();
         camera = new Camera2D();
-        camera->init(screen_width, screen_height);
+        camera->init(sw, sh, suv);
         game_objects = new PointerList<BaseGameObject>();
         to_instantiate = new PointerList<BaseGameObject>();
         background_layer = new PointerList<BaseGameObject>();
@@ -122,19 +124,19 @@ namespace engine {
         BaseGameObject* obj = nullptr;
         for (int i = 0; i < background_layer->size(); i++) {
             obj = (*background_layer)[i];
-            sprite_renderer->draw(obj->sprite, obj->transform);
+            sprite_renderer->drawSprite(obj->sprite, obj->transform);
         }
         for (int i = 0; i < environment_layer->size(); i++) {
             obj = (*environment_layer)[i];
-            sprite_renderer->draw(obj->sprite, obj->transform);
+            sprite_renderer->drawSprite(obj->sprite, obj->transform);
         }
         for (int i = 0; i < entity_layer->size(); i++) {
             obj = (*entity_layer)[i];
-            sprite_renderer->draw(obj->sprite, obj->transform);
+            sprite_renderer->drawSprite(obj->sprite, obj->transform);
         }
         for (int i = 0; i < ui_layer->size(); i++) {
             obj = (*ui_layer)[i];
-            sprite_renderer->draw(obj->sprite, obj->transform);
+            sprite_renderer->drawUI(obj->sprite, obj->transform);
         }
     }
 
@@ -190,7 +192,7 @@ namespace engine {
         Collision::endFrame();
 
         sprite_renderer->endFrame();
-    } 
+    }
 
     void BaseScene::shutdown() {
         onShutdown();

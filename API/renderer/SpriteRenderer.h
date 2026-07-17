@@ -13,12 +13,13 @@ namespace engine {
 
     class SpriteRenderer {
     public:
-        SpriteRenderer() : VAO(0), VBO(0), EBO(0) {}
+        SpriteRenderer() : VAO(0), VBO(0), EBO(0), camera_pos(glm::vec2(0.0f, 0.0f)) {}
         ~SpriteRenderer() {}
 
         bool init();
         void beginFrame(Camera2D* camera);
-        void draw(Component::Sprite* sprite, Component::Transform* transform);
+        void drawSprite(Component::Sprite* sprite, Component::Transform* transform);
+        void drawUI(Component::Sprite* sprite, Component::Transform* transform);
         void endFrame();
         void shutdown();
 
@@ -27,6 +28,8 @@ namespace engine {
         unsigned int VAO;
         unsigned int VBO;
         unsigned int EBO;
+
+        glm::vec2 camera_pos;
     };
 
 }

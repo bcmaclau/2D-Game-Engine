@@ -20,6 +20,7 @@ add_library(Engine2D STATIC
     src/scene/component/Transform.cpp
     src/scene/component/Sprite.cpp
     src/scene/component/BoxCollider.cpp
+    src/scene/component/UI.cpp
     src/physics/Collision.cpp
     src/math/Vector.cpp
     dependencies/glad/src/glad.c

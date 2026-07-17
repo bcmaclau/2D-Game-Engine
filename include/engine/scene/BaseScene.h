@@ -2,6 +2,7 @@
 
 #include "engine/math/Vector.h"
 #include "engine/container/PointerList.h"
+#include "engine/scene/BaseGameObject.h"
 
 namespace engine {
 
@@ -17,8 +18,6 @@ namespace engine {
     class AssetManager;
     class SpriteRenderer;
     class Camera2D;
-
-    class BaseGameObject;
 
     namespace Collision {
         enum class Side {

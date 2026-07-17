@@ -57,8 +57,35 @@ namespace engine {
         glBindVertexArray(VAO);
     }
 
-    void SpriteRenderer::draw(Component::Sprite* sprite, Component::Transform* transform) {
+    void SpriteRenderer::drawSprite(Component::Sprite* sprite, Component::Transform* transform) {
         glm::vec2 pos = glm::vec2(transform->getPosition().x, transform->getPosition().y);
+        glm::vec2 dim = glm::vec2(sprite->active_sprite->dimensions.x, sprite->active_sprite->dimensions.y);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(pos, 0.0f));
+        model = glm::rotate(model, glm::radians(transform->getRotation()), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(dim / 2.0f, 1.0f));
+
+        float min_tex_x = sprite->active_sprite->current_frame * sprite->active_sprite->frame_width;
+        float max_tex_x = min_tex_x + sprite->active_sprite->frame_width;
+
+        float vertices[] = {
+            // 2 normal coords, 2 tex coords
+            -1.0f, 1.0f, min_tex_x, 1.0f, // top left
+            -1.0f, -1.0f, min_tex_x, 0.0f, // bottom left
+            1.0f, 1.0f, max_tex_x, 1.0f, // top right
+            1.0f, -1.0f, max_tex_x, 0.0f // bottom right
+        };
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        shader.setMat4("model", &model);
+        sprite->active_sprite->texture->bind();
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    }
+
+    void SpriteRenderer::drawUI(Component::Sprite* sprite, Component::Transform* transform) {
+        glm::vec2 pos = glm::vec2(camera_pos.x + transform->getPosition().x, camera_pos.y + transform->getPosition().y);
         glm::vec2 dim = glm::vec2(sprite->active_sprite->dimensions.x, sprite->active_sprite->dimensions.y);
 
         glm::mat4 model = glm::mat4(1.0f);
