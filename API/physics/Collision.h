@@ -1,6 +1,6 @@
 #pragma once
 
-#include "container/PointerList.h"
+#include "data_structures/PointerArrayList.h"
 
 namespace engine {
 
@@ -19,7 +19,7 @@ namespace engine {
             float penetration;
         };
 
-        static void init(PointerList<BaseGameObject>* po, PointerList<Result>* c);
+        static void init(PointerArrayList<BaseGameObject>* po, PointerArrayList<Result>* c);
         static void updateCollisions();
         static void endFrame();
         static void shutdown();
@@ -29,8 +29,8 @@ namespace engine {
 
         static bool colliding(BaseGameObject* a, BaseGameObject* b);
 
-        static PointerList<BaseGameObject>* physics_objects;
-        static PointerList<Result>* collisions;
+        static PointerArrayList<BaseGameObject>* physics_objects;
+        static PointerArrayList<Result>* collisions;
     };
 
 }

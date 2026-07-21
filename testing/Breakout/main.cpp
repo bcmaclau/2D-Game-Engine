@@ -100,7 +100,7 @@ public:
         }
 
         if (other->getTag() == 1) {
-            destroyOther(other);
+            destroyGameObject(other);
         }
         else if (other->getTag() == 2) {
             if (side == Collision::Side::BOTTOM) {
@@ -151,13 +151,13 @@ public:
     Brick* bricks[8][14];
 
     void onInit() override {
-        ball = instantiate<Ball>();
-        paddle = instantiate<Paddle>();
+        ball = instantiateGameObject<Ball>();
+        paddle = instantiateGameObject<Paddle>();
 
         float x = 62.0f, y = 588.0f;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 14; j++) {
-                bricks[i][j] = instantiate<Brick>();
+                bricks[i][j] = instantiateGameObject<Brick>();
                 bricks[i][j]->transform->setPosition(Vec2(x, y));
                 x += 52.0f;
             }

@@ -1,33 +1,25 @@
 #pragma once
 
-#include "scene/BaseScene.h"
-#include "scene/BaseUIObject.h"
 #include "renderer/AssetManager.h"
-#include "physics/Collision.h"
 #include "data_structures/PointerArrayList.h"
+#include "scene/component/Transform.h"
+#include "scene/component/Sprite.h"
+#include "scene/BaseGameObject.h"
 
 namespace engine {
-    
-    namespace Component {
-        enum class ID;
-        class Transform;
-        class Sprite;
-        class BoxCollider;
-    }
 
-    class BaseGameObject {
+    class BaseGameObject;
+
+    class BaseUIObject {
         friend class BaseScene;
-        friend class BaseUIObject;
+        friend class BaseGameObject;
 
     public:
-        BaseGameObject() : scene_index(0), alive(true), screen_width_units(0), screen_height_units(0),
+        BaseUIObject() : scene_index(0), alive(true),
         assets(nullptr), to_instantiate(nullptr), ui_to_instantiate(nullptr),
-        transform(nullptr), sprite(nullptr), box_collider(nullptr),
         tag(0) {}
-        virtual ~BaseGameObject() {}
+        virtual ~BaseUIObject() {}
 
-        void attachComponent(Component::ID component_id);
-        
         template <typename T>
         T* instantiateGameObject() {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
@@ -38,36 +30,37 @@ namespace engine {
             return obj;
         }
         void destroyGameObject(BaseGameObject* obj);
-        void destroySelf();
-
+        
         template <typename T>
         T* instantiateUIObject() {
-            static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseGameObject");
+            static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseUIObject");
 
-            T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, 0, to_instantiate, ui_to_instantiate);
-            ui_to_instantiate->push_back(obj);
-            return obj;
+            T* ui_obj = new T();
+            ui_obj->init(assets, screen_width_units, screen_height_units, 0, to_instantiate, ui_to_instantiate);
+            ui_to_instantiate->push_back(ui_obj);
+            return ui_obj;
         }
-        void destroyUIObject(BaseUIObject* obj);
+        void destroyUIObject(BaseUIObject* ui_obj);
+        void destroySelf();
 
         Vec2 getScreenDimensions() const;
 
-        // tag
-        void setTag(int t);
-        int getTag() const;
-
-        // --- Components ---
         Component::Transform* transform;
         Component::Sprite* sprite;
-        Component::BoxCollider* box_collider;
-        virtual void onCollision(BaseGameObject* other, Collision::Side side, float penetration) {}
 
     protected:
         virtual void onInit() {}
         virtual void onUpdate(float dt) {}
         virtual void onFixedUpdate() {}
         virtual void onShutdown() {}
+
+        virtual void onClickEnter() {}
+        virtual void onClickHold() {}
+        virtual void onClickExit() {}
+
+        virtual void onHoverEnter() {}
+        virtual void onHoverHold() {}
+        virtual void onHoverExit() {}
 
     private:
         void init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* ti, PointerArrayList<BaseUIObject>* uiti);
@@ -78,6 +71,7 @@ namespace engine {
         unsigned int scene_index;
         bool alive;
         float screen_width_units, screen_height_units;
+
         AssetManager* assets;
         PointerArrayList<BaseGameObject>* to_instantiate;
         PointerArrayList<BaseUIObject>* ui_to_instantiate;

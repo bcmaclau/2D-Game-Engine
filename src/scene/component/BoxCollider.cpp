@@ -4,6 +4,10 @@
 
 namespace engine::Component {
 
+    void BoxCollider::init(Transform* t) {
+        transform = t;
+    }
+
     Vec2 BoxCollider::getDimensions() const { return dimensions; }
     void BoxCollider::setDimensions(const Vec2& d) {
         dimensions = d;

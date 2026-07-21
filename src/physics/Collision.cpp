@@ -6,13 +6,13 @@
 
 #include <iostream>
 
-engine::PointerList<engine::BaseGameObject>* engine::Collision::physics_objects = nullptr;
-engine::PointerList<engine::Collision::Result>* engine::Collision::collisions = nullptr;
+engine::PointerArrayList<engine::BaseGameObject>* engine::Collision::physics_objects = nullptr;
+engine::PointerArrayList<engine::Collision::Result>* engine::Collision::collisions = nullptr;
 
 
 namespace engine {
 
-    void Collision::init(PointerList<BaseGameObject>* po, PointerList<Result>* c) {
+    void Collision::init(PointerArrayList<BaseGameObject>* po, PointerArrayList<Result>* c) {
         physics_objects = po;
         collisions = c;
     }
@@ -60,6 +60,7 @@ namespace engine {
                         result->side = Side::RIGHT;
                     }
 
+                    std::cout << "im here" << std::endl;
                     collisions->push_back(result);
                 }
             }

@@ -21,10 +21,12 @@ namespace engine::Component {
         Vec2 getMax() const;
 
     private:
+        void init(Transform* t);
+
         Transform* transform;
         Vec2 dimensions;
         float half_x, half_y;
-        int phys_index;
+        unsigned int phys_index;
     };
 
 }

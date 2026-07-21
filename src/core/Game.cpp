@@ -60,7 +60,6 @@ namespace engine {
         // scene initialization
         assets = new AssetManager();
         active_scene = &first_scene;
-        std::cout << "game SUV: " << screen_units_v << std::endl;
         active_scene->init(assets, screen_width, screen_height, screen_units_v);
 
         time = new Time();

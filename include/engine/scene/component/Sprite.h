@@ -20,40 +20,48 @@ namespace engine::Component {
         friend class engine::SpriteRenderer;
     
     public:
-        Sprite() {}
+        Sprite() : active_id(0), active_sprite(nullptr), sprites(nullptr), render_layer(0.0f) {}
         ~Sprite() {}
 
-        int addSprite(const char* path);
+        unsigned int addSprite(const char* path);
         void setActiveSprite(int id);
 
+        Vec2 getDimensions() const;
+        void setDimensions(const Vec2& d);
         Vec2 getDimensions(int id) const;
         void setDimensions(int id, const Vec2& d);
 
+        void setNumAnimationFrames(int num_frames);
         void setNumAnimationFrames(int id, int num_frames);
-        void setAnimationInterval(int id, int);
+
+        void setAnimationInterval(int interval);
+        void setAnimationInterval(int id, int interval);
+
+        void setCurrentFrame(int frame);
         void setCurrentFrame(int id, int frame);
 
-        enum class RenderLayer {
-            BACKGROUND, ENVIRONMENT, ENTITY, UI
-        };
-        void setRenderLayer(RenderLayer layer);
-        RenderLayer getRenderLayer() const;
+        void setRenderLayer(float rl);
+        float getRenderLayer() const;
 
     private:
         AssetManager* assets;
 
         struct Details {
-            Vec2 dimensions;
-            Texture* texture;
-            int current_frame;
-            float frame_width;
-            int interval;
-            int interval_acc;
+            Vec2 dimensions = { 1.0f, 1.0f };
+            Texture* texture = nullptr;
+            int current_frame = 0;
+            float frame_width = 1.0f;
+            int interval = 0;
+            int interval_acc = 0;
         };
 
         int active_id;
-        Details active_sprite;
-        std::vector<Details> sprites;
+        Details* active_sprite;
+        PointerArrayList<Details>* sprites;
+        float render_layer;
+
+        void init(AssetManager* a);
+        void shutdown();
     };
 
 }

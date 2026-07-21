@@ -4,16 +4,18 @@
 #include "renderer/SpriteRenderer.h"
 #include "renderer/Camera2D.h"
 #include "physics/Collision.h"
-#include "container/PointerList.h"
+#include "data_structures/PointerArrayList.h"
 
 namespace engine {
 
     namespace Component {
         class Sprite;
         class Transform;
+        class BoxCollider;
     }
 
     class BaseGameObject;
+    class BaseUIObject;
     class SpriteRenderer;
 
     class BaseScene {
@@ -21,9 +23,9 @@ namespace engine {
 
     public:
         BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false),
-        assets(nullptr), sprite_renderer(nullptr), camera(nullptr),
+        assets(nullptr), sprite_renderer(nullptr), camera(nullptr), camera_follow(nullptr),
         game_objects(nullptr), to_instantiate(nullptr), physics_objects(nullptr), collisions(nullptr) {}
-        virtual ~BaseScene() = default;
+        virtual ~BaseScene() {}
 
         template <typename T>
         void swapScene() {
@@ -36,17 +38,34 @@ namespace engine {
         void endGame();
 
         template <typename T>
-        T* instantiate() {
+        T* instantiateGameObject() {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width, screen_height, game_objects->size(), to_instantiate);
+            obj->init(assets, screen_width_units, screen_height_units, game_objects->size(), to_instantiate, ui_to_instantiate);
             to_instantiate->push_back(obj);
             return obj;
         }
-        void destroy(BaseGameObject* obj);
+        void destroyGameObject(BaseGameObject* obj);
+
+        template <typename T>
+        T* instantiateUIObject() {
+            static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseUIObject");
+
+            T* obj = new T();
+            obj->init(assets, screen_width_units, screen_height_units, ui_objects->size(), to_instantiate, ui_to_instantiate);
+            ui_to_instantiate->push_back(obj);
+            return obj;
+        }
+        void destroyUIObject(BaseUIObject* obj);
 
         Vec2 getScreenDimensions() const;
+
+        Vec2 getCameraPosition() const;
+        void setCameraPosition(const Vec2& pos);
+        void moveCamera(const Vec2& delta);
+        void cameraFollow(BaseGameObject* obj);
+        void cameraUnfollow();
 
     protected:
         // user implemented functions
@@ -64,11 +83,8 @@ namespace engine {
         void endFrame();
         void shutdown();
 
-        void removeFromGO(BaseGameObject* obj, PointerList<BaseGameObject>* list);
-        void removeFromRL(BaseGameObject* obj, PointerList<BaseGameObject>* list);
-        void removeFromPO(BaseGameObject* obj, PointerList<BaseGameObject>* list);
-
-        unsigned int screen_width, screen_height;
+        unsigned int screen_width_pixels, screen_height_pixels;
+        float screen_width_units, screen_height_units;
         bool swap_scene;
         BaseScene* new_scene;
         bool end_game;
@@ -76,18 +92,23 @@ namespace engine {
         AssetManager* assets;
         SpriteRenderer* sprite_renderer;
         Camera2D* camera;
+        BaseGameObject* camera_follow;
 
-        PointerList<BaseGameObject>* game_objects;
-        PointerList<BaseGameObject>* to_instantiate;
+        PointerArrayList<BaseGameObject>* game_objects;
+        PointerArrayList<BaseGameObject>* to_instantiate;
 
-        // Rendering orders
-        PointerList<BaseGameObject>* background_layer;
-        PointerList<BaseGameObject>* environment_layer;
-        PointerList<BaseGameObject>* entity_layer;
-        PointerList<BaseGameObject>* ui_layer;
+        PointerArrayList<BaseUIObject>* ui_objects;
+        PointerArrayList<BaseUIObject>* ui_to_instantiate;
 
-        PointerList<BaseGameObject>* physics_objects;
-        PointerList<Collision::Result>* collisions;
+        PointerLinkedList<Component::Sprite>* render_order;
+
+        PointerArrayList<BaseGameObject>* physics_objects;
+        PointerArrayList<Collision::Result>* collisions;
+
+        void removeGOFromLists(BaseGameObject* obj);
+        void removeUIFromList(BaseUIObject* obj);
+        PLLNode<Component::Sprite>* insertSpriteToRO(Component::Sprite* sprite);
+        
     };
 
 }

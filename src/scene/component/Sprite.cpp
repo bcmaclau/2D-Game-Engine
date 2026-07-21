@@ -4,10 +4,10 @@
 
 namespace engine::Component {
 
-    void Sprite::init(AssetManager* a) {
+    void Sprite::init(AssetManager* a, Transform* t) {
         assets = a;
-        sprites = new PointerList<Details>;
-        render_layer = RenderLayer::BACKGROUND;
+        transform = t;
+        sprites = new PointerArrayList<Details>();
     }
 
     void Sprite::shutdown() {
@@ -17,15 +17,17 @@ namespace engine::Component {
         delete sprites;
     }
 
-    int Sprite::addSprite(const char* path) {
+    unsigned int Sprite::addSprite(const char* path) {
         Details* details = new Details();
+
         if (assets) {
             details->texture = assets->loadTexture(path);
         }
         else {
             std::cout << "Failed to add sprite, component uninitialized" << std::endl;
-            return -1;
+            return 0;
         }
+
         details->current_frame = 0;
         details->frame_width = 1.0f;
         details->interval = 0.0f;
@@ -33,7 +35,7 @@ namespace engine::Component {
         sprites->push_back(details);
         active_sprite = (*sprites)[active_id];
 
-        return (int)sprites->size() - 1;
+        return sprites->size() - 1;
     }
 
     void Sprite::setActiveSprite(int id) {
@@ -43,6 +45,17 @@ namespace engine::Component {
         }
         active_id = id;
         active_sprite = (*sprites)[id];
+    }
+
+    Vec2 Sprite::getDimensions() const {
+        if (active_sprite) { return active_sprite->dimensions; }
+        std::cout << "Sprite Component: No sprites added." << std::endl;
+        return Vec2(0.0f, 0.0f);
+    }
+
+    void Sprite::setDimensions(const Vec2& d) {
+        if (active_sprite) { active_sprite->dimensions = d; }
+        else { std::cout << "Sprite Component: No sprites added." << std::endl; }
     }
 
     Vec2 Sprite::getDimensions(int id) const {
@@ -61,6 +74,11 @@ namespace engine::Component {
         (*sprites)[id]->dimensions = d;
     }
 
+    void Sprite::setNumAnimationFrames(int num_frames) {
+        if (active_sprite) { active_sprite->frame_width = 1.0f / (float)num_frames; }
+        else { std::cout << "Sprite Component: No sprites added." << std::endl; }
+    }
+
     void Sprite::setNumAnimationFrames(int id, int num_frames) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
@@ -69,12 +87,28 @@ namespace engine::Component {
         (*sprites)[id]->frame_width = 1.0f / (float)num_frames;
     }
 
+    void Sprite::setAnimationInterval(int interval) {
+        if (active_sprite) { active_sprite->interval = interval; }
+        else { std::cout << "Sprite Component: No sprites added." << std::endl; }
+    }
+
     void Sprite::setAnimationInterval(int id, int interval) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return;
         }
         (*sprites)[id]->interval = interval;
+    }
+
+    void Sprite::setCurrentFrame(int frame) {
+        if (active_sprite) {
+            if (frame < 0 || frame >= 1.0f / active_sprite->frame_width) {
+                std::cout << "Invalid Frame Number" << std::endl;
+                return;
+            }
+            active_sprite->current_frame = frame;
+        }
+        else { std::cout << "Sprite Component: No sprites added." << std::endl; }
     }
 
     void Sprite::setCurrentFrame(int id, int frame) {
@@ -89,13 +123,8 @@ namespace engine::Component {
         (*sprites)[id]->current_frame = frame;
     }
 
-    void Sprite::setRenderLayer(RenderLayer layer) {
-        if (!layer_set) {
-            render_layer = layer;
-            layer_set = true;
-        }
-    }
+    void Sprite::setRenderLayer(float rl) { render_layer = rl; }
 
-    Sprite::RenderLayer Sprite::getRenderLayer() const { return render_layer; }
+    float Sprite::getRenderLayer() const { return render_layer; }
 
 }

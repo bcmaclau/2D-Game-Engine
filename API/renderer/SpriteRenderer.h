@@ -8,6 +8,7 @@
 #include "scene/component/Sprite.h"
 #include "scene/component/Transform.h"
 #include "math/Vector.h"
+#include "data_structures/PointerLinkedList.h"
 
 namespace engine {
 
@@ -20,6 +21,7 @@ namespace engine {
         void beginFrame(Camera2D* camera);
         void drawSprite(Component::Sprite* sprite, Component::Transform* transform);
         void drawUI(Component::Sprite* sprite, Component::Transform* transform);
+        void drawInOrder(PointerLinkedList<Component::Sprite>* render_order);
         void endFrame();
         void shutdown();
 

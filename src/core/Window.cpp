@@ -28,6 +28,15 @@ namespace engine {
 
         glViewport(0, 0, width, height);
 
+        // needed for sorting render layers by z-coordinate
+        //glEnable(GL_DEPTH_TEST);
+        //glDepthFunc(GL_LESS);
+
+        // needed for transparent textures to blend with the textures behind them
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
         return true;
     }
 
@@ -48,6 +57,7 @@ namespace engine {
 
     void Window::clear() {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 

@@ -3,12 +3,15 @@
 #include "renderer/AssetManager.h"
 #include "renderer/Texture.h"
 #include "math/Vector.h"
-#include "container/PointerList.h"
+#include "data_structures/PointerArrayList.h"
+#include "data_structures/PointerLinkedList.h"
+#include "scene/component/Transform.h"
 
 namespace engine {
 
     class BaseScene;
     class BaseGameObject;
+    class BaseUIObject;
     class SpriteRenderer;
 
 }
@@ -18,26 +21,32 @@ namespace engine::Component {
     class Sprite {
         friend class engine::BaseScene;
         friend class engine::BaseGameObject;
+        friend class engine::BaseUIObject;
         friend class engine::SpriteRenderer;
     
     public:
-        Sprite() : active_id(0), active_sprite(nullptr), sprites(nullptr), render_layer(RenderLayer::BACKGROUND), layer_index(0), layer_set(false) {}
+        Sprite() : active_id(0), active_sprite(nullptr), sprites(nullptr), render_layer(0.0f) {}
         ~Sprite() {}
 
-        int addSprite(const char* path);
+        unsigned int addSprite(const char* path);
         void setActiveSprite(int id);
 
+        Vec2 getDimensions() const;
+        void setDimensions(const Vec2& d);
         Vec2 getDimensions(int id) const;
         void setDimensions(int id, const Vec2& d);
+
+        void setNumAnimationFrames(int num_frames);
         void setNumAnimationFrames(int id, int num_frames);
+
+        void setAnimationInterval(int interval);
         void setAnimationInterval(int id, int interval);
+
+        void setCurrentFrame(int frame);
         void setCurrentFrame(int id, int frame);
 
-        enum class RenderLayer {
-            BACKGROUND, ENVIRONMENT, ENTITY, UI
-        };
-        void setRenderLayer(RenderLayer layer);
-        RenderLayer getRenderLayer() const;
+        void setRenderLayer(float rl);
+        float getRenderLayer() const;
 
     private:
         AssetManager* assets;
@@ -52,13 +61,14 @@ namespace engine::Component {
         };
 
         int active_id;
+        Transform* transform;
         Details* active_sprite;
-        PointerList<Details>* sprites;
-        RenderLayer render_layer;
-        unsigned int layer_index;
-        bool layer_set;
+        PointerArrayList<Details>* sprites;
+        
+        float render_layer;
+        PLLNode<Sprite>* order_node;
 
-        void init(AssetManager* a);
+        void init(AssetManager* a, Transform* t);
         void shutdown();
     };
 

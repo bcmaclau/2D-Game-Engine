@@ -15,12 +15,12 @@ namespace engine {
             case Component::ID::SPRITE:
                 if (sprite) { std::cout << "Game Object already has Single Sprite Component" << std::endl; return; }
                 sprite = new Component::Sprite();
-                sprite->init(assets);
+                sprite->init(assets, transform);
                 return;
             case Component::ID::BOX_COLLIDER:
                 if (box_collider) { std::cout << "Game Object already has Box Collider Component" << std::endl; return; }
                 box_collider = new Component::BoxCollider();
-                box_collider->transform = transform;
+                box_collider->init(transform);
                 return;
             default:
                 std::cout << "Invalid Component ID" << std::endl;
@@ -32,21 +32,26 @@ namespace engine {
         alive = false;
     }
 
-    void BaseGameObject::destroyOther(BaseGameObject* obj) {
+    void BaseGameObject::destroyGameObject(BaseGameObject* obj) {
         obj->alive = false;
     }
 
-    Vec2 BaseGameObject::getScreenDimensions() const { return Vec2((float)screen_width, (float)screen_height); }
+    void BaseGameObject::destroyUIObject(BaseUIObject* obj) {
+        obj->alive = false;
+    }
+
+    Vec2 BaseGameObject::getScreenDimensions() const { return Vec2(screen_width_units, screen_height_units); }
 
     void BaseGameObject::setTag(int t) { tag = t; }
     int BaseGameObject::getTag() const { return tag; }
 
-    void BaseGameObject::init(AssetManager* a, unsigned int sw, unsigned int sh, unsigned int si, PointerList<BaseGameObject>* ti) {
+    void BaseGameObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* ti, PointerArrayList<BaseUIObject>* uiti) {
         assets = a;
-        screen_width = sw;
-        screen_height = sh;
+        screen_width_units = swu;
+        screen_height_units = shu;
         scene_index = si;
         to_instantiate = ti;
+        ui_to_instantiate = uiti;
 
         attachComponent(Component::ID::TRANSFORM);
 
@@ -73,6 +78,11 @@ namespace engine {
 
     void BaseGameObject::shutdown() {
         onShutdown();
+
+        // delete components
+        delete transform;
+        if (sprite) { sprite->shutdown(); delete sprite; }
+        if (box_collider) { delete box_collider; }
     }
 
 }

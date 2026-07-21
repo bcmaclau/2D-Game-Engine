@@ -10,58 +10,39 @@ namespace engine {
 
     void BaseScene::endGame() { end_game = true; }
 
-    void BaseScene::destroy(BaseGameObject* obj) {
-        // remove from all PointerLists
-        removeFromGO(obj, game_objects);
-        if (obj->sprite) {
-            switch (obj->sprite->render_layer) {
-                case Component::Sprite::RenderLayer::ENVIRONMENT:
-                    removeFromRL(obj, environment_layer);
-                    break;
-                case Component::Sprite::RenderLayer::ENTITY:
-                    removeFromRL(obj, entity_layer);
-                    break;
-                case Component::Sprite::RenderLayer::UI:
-                    removeFromRL(obj, ui_layer);
-                    break;
-                default:
-                    removeFromRL(obj, background_layer);
-                    break;
-            }
-        }
-        if (obj->box_collider) {
-            removeFromPO(obj, physics_objects);
-        }
-
-        // delete all components
-        delete obj->transform;
-        if (obj->sprite) { obj->sprite->shutdown(); delete obj->sprite; }
-        if (obj->box_collider) { delete obj->box_collider; }
-
-        obj->shutdown();
-        delete obj;
+    void BaseScene::destroyGameObject(BaseGameObject* obj) {
+        obj->alive = false;
     }
 
-    Vec2 BaseScene::getScreenDimensions() const { return Vec2((float)screen_width, (float)screen_height); }
+    void BaseScene::destroyUIObject(BaseUIObject* obj) {
+        obj->alive = false;
+    }
+
+    Vec2 BaseScene::getScreenDimensions() const { return Vec2(screen_width_units, screen_height_units); }
+
+    Vec2 BaseScene::getCameraPosition() const { return Vec2(camera->getPosition().x, camera->getPosition().y); }
+    void BaseScene::setCameraPosition(const Vec2& pos) { camera->setPosition({ pos.x, pos.y }); }
+    void BaseScene::moveCamera(const Vec2& delta) { camera->setPosition({ camera->getPosition().x + delta.x, camera->getPosition().y + delta.y }); }
+    void BaseScene::cameraFollow(BaseGameObject* obj) { camera_follow = obj; }
+    void BaseScene::cameraUnfollow() { camera_follow = nullptr; }
 
     void BaseScene::init(AssetManager* a, unsigned int sw, unsigned int sh, float suv) {
-        std::cout << "Scene SUV: " << suv << std::endl;
-
         assets = a;
-        screen_width = sw;
-        screen_height = sh;
+        screen_width_pixels = sw;
+        screen_height_pixels = sh;
+        screen_width_units = suv * ((float)sw / (float)sh);
+        screen_height_units = suv;
         sprite_renderer = new SpriteRenderer();
         sprite_renderer->init();
         camera = new Camera2D();
         camera->init(sw, sh, suv);
-        game_objects = new PointerList<BaseGameObject>();
-        to_instantiate = new PointerList<BaseGameObject>();
-        background_layer = new PointerList<BaseGameObject>();
-        environment_layer = new PointerList<BaseGameObject>();
-        entity_layer = new PointerList<BaseGameObject>();
-        ui_layer = new PointerList<BaseGameObject>();        
-        physics_objects = new PointerList<BaseGameObject>();
-        collisions = new PointerList<Collision::Result>();
+        game_objects = new PointerArrayList<BaseGameObject>();
+        to_instantiate = new PointerArrayList<BaseGameObject>();
+        ui_objects = new PointerArrayList<BaseUIObject>();  
+        ui_to_instantiate = new PointerArrayList<BaseUIObject>();
+        render_order = new PointerLinkedList<Component::Sprite>();
+        physics_objects = new PointerArrayList<BaseGameObject>();
+        collisions = new PointerArrayList<Collision::Result>();
         Collision::init(physics_objects, collisions);
 
         onInit();
@@ -117,59 +98,26 @@ namespace engine {
         }
     }
 
+    // prepares the renderer and passes all sprite components and their transforms
     void BaseScene::draw() {
+        if (camera_follow) { setCameraPosition(camera_follow->transform->getPosition()); }
         sprite_renderer->beginFrame(camera);
-
-        // render order: background -> environment -> entity -> ui
-        BaseGameObject* obj = nullptr;
-        for (int i = 0; i < background_layer->size(); i++) {
-            obj = (*background_layer)[i];
-            sprite_renderer->drawSprite(obj->sprite, obj->transform);
-        }
-        for (int i = 0; i < environment_layer->size(); i++) {
-            obj = (*environment_layer)[i];
-            sprite_renderer->drawSprite(obj->sprite, obj->transform);
-        }
-        for (int i = 0; i < entity_layer->size(); i++) {
-            obj = (*entity_layer)[i];
-            sprite_renderer->drawSprite(obj->sprite, obj->transform);
-        }
-        for (int i = 0; i < ui_layer->size(); i++) {
-            obj = (*ui_layer)[i];
-            sprite_renderer->drawUI(obj->sprite, obj->transform);
-        }
+        sprite_renderer->drawInOrder(render_order);
     }
 
+    // incorporates and removes game objects that were instantiated or destroyed this frame
+    // also calls the end frame function for every system initialized by the scene
     void BaseScene::endFrame() {
         // instantiate new game objects from the current frame
-        // this needs to happen before destruction because of scene indices
-        // render order and collision groups get sorted here
         BaseGameObject* obj = nullptr;
         for (int i = 0; i < to_instantiate->size(); i++) {
             obj = (*to_instantiate)[i];
             obj->scene_index = game_objects->size();
             game_objects->push_back(obj);
 
-            // render order sorting
+            // inserting the sprite to the render order and storing the node for O(1) removal
             if (obj->sprite) {
-                switch (obj->sprite->render_layer) {
-                    case Component::Sprite::RenderLayer::ENVIRONMENT:
-                        obj->sprite->layer_index = environment_layer->size();
-                        environment_layer->push_back(obj);
-                        break;
-                    case Component::Sprite::RenderLayer::ENTITY:
-                        obj->sprite->layer_index = entity_layer->size();
-                        entity_layer->push_back(obj);
-                        break;
-                    case Component::Sprite::RenderLayer::UI:
-                        obj->sprite->layer_index = ui_layer->size();
-                        ui_layer->push_back(obj);
-                        break;
-                    default:
-                        obj->sprite->layer_index = background_layer->size();
-                        background_layer->push_back(obj);
-                        break;
-                }
+                obj->sprite->order_node = insertSpriteToRO(obj->sprite);
             }
 
             // TODO: collision grouping
@@ -181,19 +129,51 @@ namespace engine {
         }
         to_instantiate->clear();
 
+        // instantiate ui objects
+        BaseUIObject* ui_obj = nullptr;
+        for (int i = 0; i < ui_to_instantiate->size(); i++) {
+            ui_obj = (*ui_to_instantiate)[i];
+            ui_obj->scene_index = ui_objects->size();
+            ui_objects->push_back(ui_obj);
+
+            ui_obj->sprite->order_node = insertSpriteToRO(ui_obj->sprite);
+        }
+        ui_to_instantiate->clear();
+
         // destroy any game objects that need it this frame
-        PointerList<BaseGameObject> to_destroy;
+        PointerArrayList<BaseGameObject> to_destroy;
         for (int i = 0; i < game_objects->size(); i++) {
             obj = (*game_objects)[i];
             if (!obj->alive) { to_destroy.push_back(obj); }
         }
-        for (int i = 0; i < to_destroy.size(); i++) { destroy(to_destroy[i]); }
+        for (int i = 0; i < to_destroy.size(); i++) {
+            obj = to_destroy[i];
+            if (obj == camera_follow) { cameraUnfollow(); }
+            removeGOFromLists(obj);
+            if (obj->sprite) { render_order->remove(obj->sprite->order_node); }
+            obj->shutdown();
+            delete obj;
+        }
+
+        // destroy any ui objects that need it this frame
+        PointerArrayList<BaseUIObject> ui_to_destroy;
+        for (int i = 0; i < ui_objects->size(); i++) {
+            ui_obj = (*ui_objects)[i];
+            if (!ui_obj->alive) { ui_to_destroy.push_back(ui_obj); }
+        }
+        for (int i = 0; i < ui_to_destroy.size(); i++) {
+            ui_obj = ui_to_destroy[i];
+            removeUIFromList(ui_obj);
+            render_order->remove(ui_obj->sprite->order_node);
+            ui_obj->shutdown();
+            delete ui_obj;
+        }
 
         Collision::endFrame();
-
         sprite_renderer->endFrame();
     }
 
+    // shuts down every system initialized by the scene
     void BaseScene::shutdown() {
         onShutdown();
 
@@ -206,48 +186,75 @@ namespace engine {
         game_objects->clear();
         physics_objects->clear();
 
+        BaseUIObject* ui_obj = nullptr;
+        for (int i = 0; i < ui_objects->size(); i++) {
+            ui_obj = (*ui_objects)[i];
+            ui_obj->shutdown();
+            delete ui_obj;
+        }
+        ui_objects->clear();
+
         sprite_renderer->shutdown();
         delete sprite_renderer;
         delete camera;
         delete game_objects;
-        delete to_instantiate;
         delete physics_objects;
+        delete ui_objects;
+        delete to_instantiate;
+        delete ui_to_instantiate;
+        delete render_order;
         delete collisions;
         Collision::shutdown();
     }
 
-    void BaseScene::removeFromGO(BaseGameObject* obj, PointerList<BaseGameObject>* list) {
+    // removes a gameobject from the game objects pointer list and physics list
+    void BaseScene::removeGOFromLists(BaseGameObject* obj) {
         unsigned int obj_index = obj->scene_index;
-        unsigned int last_index = list->size() - 1;
+        unsigned int last_index = game_objects->size() - 1;
 
         if (obj_index != last_index) {
-            list->swap_indices(obj_index, last_index);
-            (*list)[obj_index]->scene_index = obj_index;
+            game_objects->swap_indices(obj_index, last_index);
+            (*game_objects)[obj_index]->scene_index = obj_index;
         }
 
-        list->pop_back();
+        game_objects->pop_back();
+
+        if (obj->box_collider) {
+            obj_index = obj->box_collider->phys_index;
+            last_index = physics_objects->size() - 1;
+
+            if (obj_index != last_index) {
+                physics_objects->swap_indices(obj_index, last_index);
+                (*physics_objects)[obj_index]->box_collider->phys_index = obj_index;
+            }
+
+            physics_objects->pop_back();
+        }
     }
-    void BaseScene::removeFromRL(BaseGameObject* obj, PointerList<BaseGameObject>* list) {
-        unsigned int obj_index = obj->sprite->layer_index;
-        unsigned int last_index = list->size() - 1;
+    
+    // removes a ui object from the ui objects pointer list
+    void BaseScene::removeUIFromList(BaseUIObject* obj) {
+        unsigned int obj_index = obj->scene_index;
+        unsigned int last_index = ui_objects->size() - 1;
 
-        if (obj_index != last_index) {
-            list->swap_indices(obj_index, last_index);
-            (*list)[obj_index]->sprite->layer_index = obj_index;
+        if (obj_index == last_index) {
+            ui_objects->swap_indices(obj_index, last_index);
+            (*ui_objects)[obj_index]->scene_index = obj_index;
         }
 
-        list->pop_back();
+        ui_objects->pop_back();
     }
-    void BaseScene::removeFromPO(BaseGameObject* obj, PointerList<BaseGameObject>* list) {
-        unsigned int obj_index = obj->box_collider->phys_index;
-        unsigned int last_index = list->size() - 1;
 
-        if (obj_index != last_index) {
-            list->swap_indices(obj_index, last_index);
-            (*list)[obj_index]->box_collider->phys_index = obj_index;
-        }
+    // inserts and removes sprites from the rendering order
+    PLLNode<Component::Sprite>* BaseScene::insertSpriteToRO(Component::Sprite* sprite) {
+        if (render_order->size() == 0) { return render_order->push_back(sprite); }
 
-        list->pop_back();
+        float order = sprite->getRenderLayer();
+        if (order >= render_order->getTail()->getData()->getRenderLayer()) { return render_order->push_back(sprite); }
+
+        PLLNode<Component::Sprite>* current = render_order->getHead();
+        while (current->getNext() && current->getData()->getRenderLayer() < order) { current = current->getNext(); }
+        return render_order->insert_before(current, sprite);
     }
 
 }

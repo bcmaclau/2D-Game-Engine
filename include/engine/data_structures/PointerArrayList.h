@@ -5,15 +5,15 @@
 namespace engine {
 
     template <typename T>
-    class PointerList {
+    class PointerArrayList {
     public:
-        PointerList() {
+        PointerArrayList() {
             list = (T**)malloc(32 * sizeof(T*));
             current_max = 32;
             current_size = 0;
         }
 
-        ~PointerList() {
+        ~PointerArrayList() {
             free(list);
         }
 
@@ -35,7 +35,13 @@ namespace engine {
             list[second] = temp;
         }
 
-        void pop_back() { current_size--; }
+        void pop_back() {
+            if (current_size == 0) {
+                std::cout << "PointerList: popping with a size of 0" << std::endl;
+                return;
+            }
+            current_size--;
+        }
         void clear() { current_size = 0; }
 
         T* at(unsigned int index) const {
