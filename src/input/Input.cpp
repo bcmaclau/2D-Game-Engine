@@ -13,6 +13,7 @@ namespace engine {
     Vec2 Input::mouse_pos = Vec2(0.0f, 0.0f);
     bool Input::current_buttons[3] = { false };
     bool Input::prev_buttons[3] = { false };
+    Camera2D* Input::camera = nullptr;
 
     void Input::init(GLFWwindow* window, unsigned int sh) {
         screen_height = sh;
@@ -27,6 +28,10 @@ namespace engine {
         }
     }
 
+    void Input::initCamera(Camera2D* c) {
+        camera = c;
+    }
+
     bool Input::isKeyPushed(Key key) { return current_keys[(int)key] && !prev_keys[(int)key]; }
 
     bool Input::isKeyHeld(Key key) { return current_keys[(int)key]; }
@@ -36,6 +41,8 @@ namespace engine {
     bool Input::isMousePushed(Button button) { return current_buttons[(int)button] && !prev_buttons[(int)button]; }
 
     bool Input::isMouseHeld(Button button) { return current_buttons[(int)button]; }
+
+    bool Input::isMouseReleased(Button button) { return !current_buttons[(int)button] && prev_buttons[(int)button]; }
 
     void Input::endFrame() {
         std::memcpy(prev_keys, current_keys, sizeof(current_keys));
@@ -50,10 +57,11 @@ namespace engine {
     }
 
     void Input::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-        mouse_pos = Vec2((float)xpos, (float)screen_height - (float)ypos);
+        glm::vec2 mp = camera->toWorldCoords({ (float)xpos, (float)screen_height - (float)ypos });
+        mouse_pos = Vec2(mp.x, mp.y);
     }
 
-    void Input::mouseButtonCallback(GLFWwindow* window, int action, int button, int mods) {
+    void Input::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
         Button b = buttonFromGLFW(button);
         if (b == Button::UNKNOWN) { return; }
         if (action == GLFW_PRESS) { current_buttons[(int)b] = true; }

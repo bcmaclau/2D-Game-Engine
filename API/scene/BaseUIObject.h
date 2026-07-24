@@ -5,6 +5,7 @@
 #include "scene/component/Transform.h"
 #include "scene/component/Sprite.h"
 #include "scene/BaseGameObject.h"
+#include "input/Input.h"
 
 namespace engine {
 
@@ -17,7 +18,8 @@ namespace engine {
     public:
         BaseUIObject() : scene_index(0), alive(true),
         assets(nullptr), to_instantiate(nullptr), ui_to_instantiate(nullptr),
-        tag(0) {}
+        tag(0),
+        current_hovering(false), prev_hovering(false) {}
         virtual ~BaseUIObject() {}
 
         template <typename T>
@@ -54,9 +56,9 @@ namespace engine {
         virtual void onFixedUpdate() {}
         virtual void onShutdown() {}
 
-        virtual void onClickEnter() {}
-        virtual void onClickHold() {}
-        virtual void onClickExit() {}
+        virtual void onClickEnter(Input::Button button) {}
+        virtual void onClickHold(Input::Button button) {}
+        virtual void onClickExit(Input::Button button) {}
 
         virtual void onHoverEnter() {}
         virtual void onHoverHold() {}
@@ -77,6 +79,8 @@ namespace engine {
         PointerArrayList<BaseUIObject>* ui_to_instantiate;
 
         int tag;
+
+        bool current_hovering, prev_hovering;
     };
 
 }

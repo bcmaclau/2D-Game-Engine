@@ -130,7 +130,7 @@ namespace engine {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, pos);
             model = glm::rotate(model, glm::radians(sprite->transform->getRotation()), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::scale(model, glm::vec3(dim / 1.0f, 1.0f));
+            model = glm::scale(model, glm::vec3(dim / 2.0f, 1.0f));
 
             float min_tex_x = sprite->active_sprite->current_frame * sprite->active_sprite->frame_width;
             float max_tex_x = min_tex_x + sprite->active_sprite->frame_width;

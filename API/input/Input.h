@@ -1,6 +1,7 @@
 #pragma once
 
 #include "math/Vector.h"
+#include "renderer/Camera2D.h"
 
 struct GLFWwindow;
 
@@ -8,6 +9,7 @@ namespace engine {
     
     class Input {
         friend class Game;
+        friend class BaseScene;
         
     public:
         enum class Key {
@@ -30,6 +32,7 @@ namespace engine {
         static Vec2 getMousePos();
         static bool isMousePushed(Button button);
         static bool isMouseHeld(Button button);
+        static bool isMouseReleased(Button button);
         
     private:
         Input() {}
@@ -46,10 +49,12 @@ namespace engine {
         
         static unsigned int screen_height;
         static Vec2 mouse_pos;
+        static Camera2D* camera;
         static bool current_buttons[3];
         static bool prev_buttons[3];
 
         static void init(GLFWwindow* window, unsigned int sh);
+        static void initCamera(Camera2D* c);
         static void endFrame();
     };
 

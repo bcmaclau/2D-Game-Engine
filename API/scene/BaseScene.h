@@ -78,6 +78,7 @@ namespace engine {
         void init(AssetManager* a, unsigned int sw, unsigned int sh, float suv);
         void update(float dt);
         void handlePhysics();
+        void handleUI();
         void fixedUpdate();
         void draw();
         void endFrame();

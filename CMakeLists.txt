@@ -15,6 +15,7 @@ add_library(Engine2D STATIC
     src/renderer/SpriteRenderer.cpp
     src/renderer/AssetManager.cpp
     src/input/Input.cpp
+    src/input/UIInteraction.cpp
     src/scene/BaseGameObject.cpp
     src/scene/BaseUIObject.cpp
     src/scene/BaseScene.cpp

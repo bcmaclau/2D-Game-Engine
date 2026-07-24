@@ -3,6 +3,8 @@
 #include "scene/BaseGameObject.h"
 #include "scene/component/Components.h"
 #include "physics/Collision.h"
+#include "input/UIInteraction.h"
+#include "input/Input.h"
 
 #include <iostream>
 
@@ -36,6 +38,7 @@ namespace engine {
         sprite_renderer->init();
         camera = new Camera2D();
         camera->init(sw, sh, suv);
+        Input::initCamera(camera);
         game_objects = new PointerArrayList<BaseGameObject>();
         to_instantiate = new PointerArrayList<BaseGameObject>();
         ui_objects = new PointerArrayList<BaseUIObject>();  
@@ -50,6 +53,7 @@ namespace engine {
 
     void BaseScene::update(float dt) {
         handlePhysics();
+        handleUI();
 
         onUpdate(dt);
 
@@ -85,6 +89,28 @@ namespace engine {
             
             result->a->onCollision(result->b, result->side, result->penetration);
             result->b->onCollision(result->a, opposite_side, result->penetration);
+        }
+    }
+
+    void BaseScene::handleUI() {
+        BaseUIObject* ui_obj = nullptr;
+        for (int i = 0; i < ui_objects->size(); i++) {
+            ui_obj = (*ui_objects)[i];
+
+            ui_obj->prev_hovering = ui_obj->current_hovering;
+            ui_obj->current_hovering = UIInteraction::isHovering(ui_obj->transform, ui_obj->sprite);
+            if (!ui_obj->prev_hovering && ui_obj->current_hovering) { ui_obj->onHoverEnter(); }
+            if (ui_obj->current_hovering) { ui_obj->onHoverHold(); }
+            if (ui_obj->prev_hovering && !ui_obj->current_hovering) { ui_obj->onHoverExit(); }
+
+            if (ui_obj->current_hovering) {
+                for (int i = 0; i < 3; i++) {
+                    Input::Button button = (Input::Button)i;
+                    if (Input::isMousePushed(button)) { ui_obj->onClickEnter(button); }
+                    if (Input::isMouseHeld(button)) { ui_obj->onClickHold(button); }
+                    if (Input::isMouseReleased(button)) { ui_obj->onClickExit(button); }
+                }
+            }
         }
     }
 
