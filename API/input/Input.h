@@ -1,6 +1,6 @@
 #pragma once
 
-#include "math/Vector.h"
+#include "data_structures/Vector.h"
 #include "renderer/Camera2D.h"
 
 struct GLFWwindow;

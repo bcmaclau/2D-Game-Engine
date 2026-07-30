@@ -1,6 +1,6 @@
 #include "input/UIInteraction.h"
 
-#include "math/Vector.h"
+#include "data_structures/Vector.h"
 #include "input/Input.h"
 
 

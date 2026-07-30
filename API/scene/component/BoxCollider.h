@@ -1,7 +1,7 @@
 #pragma once
 
 #include "scene/BaseGameObject.h"
-#include "math/Vector.h"
+#include "data_structures/Vector.h"
 #include "scene/component/Transform.h"
 
 namespace engine::Component {

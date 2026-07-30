@@ -2,7 +2,7 @@
 
 #include "engine/scene/BaseScene.h"
 #include "engine/scene/BaseGameObject.h"
-#include "engine/math/Vector.h"
+#include "engine/data_structures/Vector.h"
 
 #include <vector>
 

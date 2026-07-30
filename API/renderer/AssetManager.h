@@ -1,7 +1,7 @@
 #pragma once
 
 #include "renderer/Texture.h"
-#include "math/Vector.h"
+#include "data_structures/Vector.h"
 
 #include <unordered_map>
 #include <vector>

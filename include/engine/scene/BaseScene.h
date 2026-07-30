@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/math/Vector.h"
+#include "engine/data_structures/Vector.h"
 #include "engine/data_structures/PointerArrayList.h"
 #include "engine/data_structures/PointerLinkedList.h"
 #include "engine/scene/BaseGameObject.h"

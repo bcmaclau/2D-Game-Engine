@@ -1,7 +1,5 @@
 #include "scene/component/BoxCollider.h"
 
-#include "math/Vector.h"
-
 namespace engine::Component {
 
     void BoxCollider::init(Transform* t) {

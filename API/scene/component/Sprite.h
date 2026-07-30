@@ -3,7 +3,7 @@
 #include "renderer/AssetManager.h"
 #include "renderer/Texture.h"
 #include "renderer/BatchRenderer.h"
-#include "math/Vector.h"
+#include "data_structures/Vector.h"
 #include "data_structures/PointerArrayList.h"
 #include "data_structures/PointerLinkedList.h"
 #include "scene/component/Transform.h"
