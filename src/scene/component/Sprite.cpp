@@ -7,7 +7,7 @@ namespace engine::Component {
     void Sprite::init(AssetManager* a, Transform* t) {
         assets = a;
         transform = t;
-        sprites = new PointerArrayList<Details>();
+        sprites = new PointerArrayList<SpriteInfo>();
     }
 
     void Sprite::shutdown() {
@@ -18,23 +18,18 @@ namespace engine::Component {
     }
 
     unsigned int Sprite::addSprite(const char* path) {
-        Details* details = new Details();
-
+        
+        SpriteInfo* info = nullptr;
+        
         if (assets) {
-            details->texture = assets->loadTexture(path);
+            info = assets->getSprite(path);
         }
         else {
-            std::cout << "Failed to add sprite, component uninitialized" << std::endl;
+            std::cerr << "Failed to add sprite, component uninitialized" << std::endl;
             return 0;
         }
-
-        details->current_frame = 0;
-        details->frame_width = 1.0f;
-        details->interval = 0.0f;
         
-        sprites->push_back(details);
-        active_sprite = (*sprites)[active_id];
-
+        sprites->push_back(info);
         return sprites->size() - 1;
     }
 

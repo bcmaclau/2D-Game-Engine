@@ -11,7 +11,7 @@ namespace engine {
 
     public:
         BaseUIObject() : scene_index(0), alive(true),
-        assets(nullptr), to_instantiate(nullptr), ui_to_instantiate(nullptr),
+        assets(nullptr), go_to_instantiate(nullptr), ui_to_instantiate(nullptr),
         tag(0),
         current_hovering(false), prev_hovering(false) {}
         virtual ~BaseUIObject() {}
@@ -21,8 +21,8 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, 0, to_instantiate, ui_to_instantiate);
-            to_instantiate->push_back(obj);
+            obj->init(assets, screen_width_units, screen_height_units, 0, go_to_instantiate, ui_to_instantiate);
+            go_to_instantiate->push_back(obj);
             return obj;
         }
         void destroyGameObject(BaseGameObject* obj);
@@ -32,7 +32,7 @@ namespace engine {
             static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseUIObject");
 
             T* ui_obj = new T();
-            ui_obj->init(assets, screen_width_units, screen_height_units, 0, to_instantiate, ui_to_instantiate);
+            ui_obj->init(assets, screen_width_units, screen_height_units, 0, go_to_instantiate, ui_to_instantiate);
             ui_to_instantiate->push_back(ui_obj);
             return ui_obj;
         }
@@ -59,7 +59,7 @@ namespace engine {
         virtual void onHoverExit() {}
 
     private:
-        void init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* ti, PointerArrayList<BaseUIObject>* uiti);
+        void init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti);
         void update(float dt);
         void fixedUpdate();
         void shutdown();
@@ -69,7 +69,7 @@ namespace engine {
         float screen_width_units, screen_height_units;
 
         AssetManager* assets;
-        PointerArrayList<BaseGameObject>* to_instantiate;
+        PointerArrayList<BaseGameObject>* go_to_instantiate;
         PointerArrayList<BaseUIObject>* ui_to_instantiate;
 
         int tag;

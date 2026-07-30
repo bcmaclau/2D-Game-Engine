@@ -12,7 +12,7 @@ add_library(Engine2D STATIC
     src/renderer/Shader.cpp
     src/renderer/Texture.cpp
     src/renderer/Camera2D.cpp
-    src/renderer/SpriteRenderer.cpp
+    src/renderer/BatchRenderer.cpp
     src/renderer/AssetManager.cpp
     src/input/Input.cpp
     src/input/UIInteraction.cpp

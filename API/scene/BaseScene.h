@@ -1,7 +1,7 @@
 #pragma once
 
 #include "renderer/AssetManager.h"
-#include "renderer/SpriteRenderer.h"
+#include "renderer/BatchRenderer.h"
 #include "renderer/Camera2D.h"
 #include "physics/Collision.h"
 #include "data_structures/PointerArrayList.h"
@@ -22,9 +22,9 @@ namespace engine {
         friend class Game;
 
     public:
-        BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false),
-        assets(nullptr), sprite_renderer(nullptr), camera(nullptr), camera_follow(nullptr),
-        game_objects(nullptr), to_instantiate(nullptr), physics_objects(nullptr), collisions(nullptr) {}
+        BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false), in_use_sprites(true),
+        assets(nullptr), camera(nullptr), camera_follow(nullptr),
+        game_objects(nullptr), go_to_instantiate(nullptr), ui_to_instantiate(nullptr), physics_objects(nullptr), collisions(nullptr) {}
         virtual ~BaseScene() {}
 
         template <typename T>
@@ -42,8 +42,8 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, game_objects->size(), to_instantiate, ui_to_instantiate);
-            to_instantiate->push_back(obj);
+            obj->init(assets, screen_width_units, screen_height_units, game_objects->size(), go_to_instantiate, ui_to_instantiate);
+            go_to_instantiate->push_back(obj);
             return obj;
         }
         void destroyGameObject(BaseGameObject* obj);
@@ -53,7 +53,7 @@ namespace engine {
             static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseUIObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, ui_objects->size(), to_instantiate, ui_to_instantiate);
+            obj->init(assets, screen_width_units, screen_height_units, ui_objects->size(), go_to_instantiate, ui_to_instantiate);
             ui_to_instantiate->push_back(obj);
             return obj;
         }
@@ -67,15 +67,18 @@ namespace engine {
         void cameraFollow(BaseGameObject* obj);
         void cameraUnfollow();
 
+        void addSpriteDirectory(const char* path, bool recurse);
+
     protected:
         // user implemented functions
+        virtual void useSprites() {}
         virtual void onInit() {}
         virtual void onUpdate(float dt) {}
         virtual void onFixedUpdate() {}
         virtual void onShutdown() {}
 
     private:
-        void init(AssetManager* a, unsigned int sw, unsigned int sh, float suv);
+        void init(unsigned int sw, unsigned int sh, float suv);
         void update(float dt);
         void handlePhysics();
         void handleUI();
@@ -89,27 +92,27 @@ namespace engine {
         bool swap_scene;
         BaseScene* new_scene;
         bool end_game;
+        bool in_use_sprites;
 
         AssetManager* assets;
-        SpriteRenderer* sprite_renderer;
         Camera2D* camera;
         BaseGameObject* camera_follow;
 
         PointerArrayList<BaseGameObject>* game_objects;
-        PointerArrayList<BaseGameObject>* to_instantiate;
+        PointerArrayList<BaseGameObject>* go_to_instantiate;
 
         PointerArrayList<BaseUIObject>* ui_objects;
         PointerArrayList<BaseUIObject>* ui_to_instantiate;
 
-        PointerLinkedList<Component::Sprite>* render_order;
+        PointerLinkedList<Component::Sprite>* go_render_order;
+        PointerLinkedList<Component::Sprite>* ui_render_order;
 
         PointerArrayList<BaseGameObject>* physics_objects;
         PointerArrayList<Collision::Result>* collisions;
 
         void removeGOFromLists(BaseGameObject* obj);
         void removeUIFromList(BaseUIObject* obj);
-        PLLNode<Component::Sprite>* insertSpriteToRO(Component::Sprite* sprite);
-        
+        PLLNode<Component::Sprite>* insertSpriteToRO(Component::Sprite* sprite, PointerLinkedList<Component::Sprite>* render_order);
     };
 
 }

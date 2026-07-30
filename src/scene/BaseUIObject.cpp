@@ -2,12 +2,12 @@
 
 namespace engine {
     
-    void BaseUIObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* ti, PointerArrayList<BaseUIObject>* uiti) {
+    void BaseUIObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
         assets = a;
         screen_width_units = swu;
         screen_height_units = shu;
         scene_index = si;
-        to_instantiate = ti;
+        go_to_instantiate = goti;
         ui_to_instantiate = uiti;
 
         transform = new Component::Transform();

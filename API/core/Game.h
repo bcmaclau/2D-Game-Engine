@@ -49,7 +49,6 @@ namespace engine {
         unsigned int screen_width, screen_height;
         Window* window;
         Time* time;
-        AssetManager* assets;
     };
 
 }

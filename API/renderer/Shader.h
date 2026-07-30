@@ -11,6 +11,7 @@ namespace engine {
 
         bool init(const char* vertex_path, const char* fragment_path);
         void setMat4(const char* name, glm::mat4* mat);
+        void setInt(const char* name, int value);
         void use();
         void shutdown();
 

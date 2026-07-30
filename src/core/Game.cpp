@@ -58,9 +58,8 @@ namespace engine {
         Input::init(window->getNativeHandle(), screen_height);
 
         // scene initialization
-        assets = new AssetManager();
         active_scene = &first_scene;
-        active_scene->init(assets, screen_width, screen_height, screen_units_v);
+        active_scene->init(screen_width, screen_height, screen_units_v);
 
         time = new Time();
 
@@ -97,8 +96,6 @@ namespace engine {
         // shutdown order:
         // game objects, textures, shaders, then window last
         onShutdown();
-        assets->clear();
-        delete assets;
         window->shutdown();
         delete window;
         delete time;
@@ -109,7 +106,7 @@ namespace engine {
         if (!first_scene) { delete active_scene; }
         else { first_scene = false; }
         active_scene = active_scene->new_scene;
-        active_scene->init(assets, screen_width, screen_height, screen_units_v);
+        active_scene->init(screen_width, screen_height, screen_units_v);
     }
 
 }

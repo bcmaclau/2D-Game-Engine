@@ -21,7 +21,7 @@ namespace engine {
 
     public:
         BaseGameObject() : scene_index(0), alive(true), screen_width_units(0), screen_height_units(0),
-        assets(nullptr), to_instantiate(nullptr), ui_to_instantiate(nullptr),
+        assets(nullptr), go_to_instantiate(nullptr), ui_to_instantiate(nullptr),
         transform(nullptr), sprite(nullptr), box_collider(nullptr),
         tag(0) {}
         virtual ~BaseGameObject() {}
@@ -33,8 +33,8 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, 0, to_instantiate, ui_to_instantiate);
-            to_instantiate->push_back(obj);
+            obj->init(assets, screen_width_units, screen_height_units, 0, go_to_instantiate, ui_to_instantiate);
+            go_to_instantiate->push_back(obj);
             return obj;
         }
         void destroyGameObject(BaseGameObject* obj);
@@ -45,7 +45,7 @@ namespace engine {
             static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, 0, to_instantiate, ui_to_instantiate);
+            obj->init(assets, screen_width_units, screen_height_units, 0, go_to_instantiate, ui_to_instantiate);
             ui_to_instantiate->push_back(obj);
             return obj;
         }
@@ -70,7 +70,7 @@ namespace engine {
         virtual void onShutdown() {}
 
     private:
-        void init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* ti, PointerArrayList<BaseUIObject>* uiti);
+        void init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti);
         void update(float dt);
         void fixedUpdate();
         void shutdown();
@@ -79,7 +79,7 @@ namespace engine {
         bool alive;
         float screen_width_units, screen_height_units;
         AssetManager* assets;
-        PointerArrayList<BaseGameObject>* to_instantiate;
+        PointerArrayList<BaseGameObject>* go_to_instantiate;
         PointerArrayList<BaseUIObject>* ui_to_instantiate;
 
         int tag;

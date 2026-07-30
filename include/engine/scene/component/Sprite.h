@@ -9,6 +9,8 @@
 namespace engine {
 
     class Texture;
+    class BatchRenderer;
+    class SpriteInfo;
 
 }
 
@@ -17,7 +19,8 @@ namespace engine::Component {
     class Sprite {
         friend class engine::BaseScene;
         friend class engine::BaseGameObject;
-        friend class engine::SpriteRenderer;
+        friend class engine::BaseUIObject;
+        friend class engine::BatchRenderer;
     
     public:
         Sprite() : active_id(0), active_sprite(nullptr), sprites(nullptr), render_layer(0.0f) {}
@@ -46,21 +49,15 @@ namespace engine::Component {
     private:
         AssetManager* assets;
 
-        struct Details {
-            Vec2 dimensions = { 1.0f, 1.0f };
-            Texture* texture = nullptr;
-            int current_frame = 0;
-            float frame_width = 1.0f;
-            int interval = 0;
-            int interval_acc = 0;
-        };
-
         int active_id;
-        Details* active_sprite;
-        PointerArrayList<Details>* sprites;
+        Transform* transform;
+        SpriteInfo* active_sprite;
+        PointerArrayList<SpriteInfo>* sprites;
+        
         float render_layer;
+        PLLNode<Sprite>* order_node;
 
-        void init(AssetManager* a);
+        void init(AssetManager* a, Transform* t);
         void shutdown();
     };
 

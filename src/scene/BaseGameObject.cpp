@@ -45,12 +45,12 @@ namespace engine {
     void BaseGameObject::setTag(int t) { tag = t; }
     int BaseGameObject::getTag() const { return tag; }
 
-    void BaseGameObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* ti, PointerArrayList<BaseUIObject>* uiti) {
+    void BaseGameObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
         assets = a;
         screen_width_units = swu;
         screen_height_units = shu;
         scene_index = si;
-        to_instantiate = ti;
+        go_to_instantiate = goti;
         ui_to_instantiate = uiti;
 
         attachComponent(Component::ID::TRANSFORM);
