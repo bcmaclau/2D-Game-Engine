@@ -30,29 +30,27 @@ namespace engine::Component {
         ~Sprite() {}
 
         unsigned int addSprite(const char* path);
-        void setActiveSprite(int id);
+        void setActiveSprite(unsigned int id);
 
         Vec2 getDimensions() const;
         void setDimensions(const Vec2& d);
-        Vec2 getDimensions(int id) const;
-        void setDimensions(int id, const Vec2& d);
+        Vec2 getDimensions(unsigned int id) const;
+        void setDimensions(unsigned int id, const Vec2& d);
 
         void setNumAnimationFrames(int num_frames);
-        void setNumAnimationFrames(int id, int num_frames);
+        void setNumAnimationFrames(unsigned int id, int num_frames);
 
         void setAnimationInterval(int interval);
-        void setAnimationInterval(int id, int interval);
+        void setAnimationInterval(unsigned int id, int interval);
 
         void setCurrentFrame(int frame);
-        void setCurrentFrame(int id, int frame);
+        void setCurrentFrame(unsigned int id, int frame);
 
         void setRenderLayer(float rl);
         float getRenderLayer() const;
 
     private:
-        AssetManager* assets;
-
-        int active_id;
+        unsigned int active_id;
         Transform* transform;
         SpriteInfo* active_sprite;
         PointerArrayList<SpriteInfo>* sprites;
@@ -60,7 +58,7 @@ namespace engine::Component {
         float render_layer;
         PLLNode<Sprite>* order_node;
 
-        void init(AssetManager* a, Transform* t);
+        void init(Transform* t);
         void shutdown();
     };
 

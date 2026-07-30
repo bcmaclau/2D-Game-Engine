@@ -34,7 +34,7 @@ namespace engine {
 
     public:
         BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false), in_use_sprites(true),
-        assets(nullptr), camera(nullptr), camera_follow(nullptr),
+        camera(nullptr), camera_follow(nullptr),
         game_objects(nullptr), go_to_instantiate(nullptr), ui_to_instantiate(nullptr), physics_objects(nullptr), collisions(nullptr) {}
         virtual ~BaseScene() {}
 
@@ -53,7 +53,7 @@ namespace engine {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, game_objects->size(), go_to_instantiate, ui_to_instantiate);
+            obj->init(screen_width_units, screen_height_units, game_objects->size(), go_to_instantiate, ui_to_instantiate);
             go_to_instantiate->push_back(obj);
             return obj;
         }
@@ -64,7 +64,7 @@ namespace engine {
             static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseUIObject");
 
             T* obj = new T();
-            obj->init(assets, screen_width_units, screen_height_units, ui_objects->size(), go_to_instantiate, ui_to_instantiate);
+            obj->init(screen_width_units, screen_height_units, ui_objects->size(), go_to_instantiate, ui_to_instantiate);
             ui_to_instantiate->push_back(obj);
             return obj;
         }
@@ -105,7 +105,6 @@ namespace engine {
         bool end_game;
         bool in_use_sprites;
 
-        AssetManager* assets;
         Camera2D* camera;
         BaseGameObject* camera_follow;
 

@@ -12,6 +12,13 @@
 
 namespace engine {
 
+    unsigned int AssetManager::texture_array_id = 0;
+    int AssetManager::num_layers = 0;
+    int AssetManager::max_tex_width = 0;
+    int AssetManager::max_tex_height = 0;
+    std::vector<std::string> AssetManager::sprite_paths;
+    std::unordered_map<std::string, SpriteInfo*> AssetManager::sprite_lookup;
+
     void AssetManager::addSpriteDirectory(const char* dir, bool recursive) {
         if (recursive) {
             for (const auto& entry : std::filesystem::recursive_directory_iterator(Paths::resolve(std::string(dir)))) {
@@ -41,7 +48,7 @@ namespace engine {
             if (w > max_tex_width) { max_tex_width = w; }
             if (h > max_tex_height) { max_tex_height = h; }
         }
-        max_layers = sprite_paths.size();
+        num_layers = sprite_paths.size();
 
         glGenTextures(1, &texture_array_id);
         glBindTexture(GL_TEXTURE_2D_ARRAY, texture_array_id);
@@ -77,7 +84,7 @@ namespace engine {
         return sprite_lookup[r_path];
     }
 
-    void AssetManager::shutdown() {
+    void AssetManager::reset() {
         for (auto it = sprite_lookup.begin(); it != sprite_lookup.end(); it++) {
             delete it->second;
         }

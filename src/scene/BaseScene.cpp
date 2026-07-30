@@ -47,17 +47,16 @@ namespace engine {
         collisions = new PointerArrayList<Collision::Result>();
         Collision::init(physics_objects, collisions);
 
-        assets = new AssetManager();
         useSprites();
         in_use_sprites = false;
-        assets->loadSprites();
-        BatchRenderer::init(assets->texture_array_id, assets->max_tex_width, assets->max_tex_height);
+        AssetManager::loadSprites();
+        BatchRenderer::init(AssetManager::texture_array_id, AssetManager::max_tex_width, AssetManager::max_tex_height);
 
         onInit();
     }
 
     void BaseScene::addSpriteDirectory(const char* path, bool recurse) {
-        if (in_use_sprites) { assets->addSpriteDirectory(path, recurse); }
+        if (in_use_sprites) { AssetManager::addSpriteDirectory(path, recurse); }
         else { std::cerr << "Attempting to load sprites after loading phase" << std::endl; }
     }
 
@@ -229,8 +228,7 @@ namespace engine {
         }
         ui_objects->clear();
 
-        assets->shutdown();
-        delete assets;
+        AssetManager::reset();
         BatchRenderer::shutdown();
 
         delete camera;

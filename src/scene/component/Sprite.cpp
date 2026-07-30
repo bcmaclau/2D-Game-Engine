@@ -4,8 +4,7 @@
 
 namespace engine::Component {
 
-    void Sprite::init(AssetManager* a, Transform* t) {
-        assets = a;
+    void Sprite::init(Transform* t) {
         transform = t;
         sprites = new PointerArrayList<SpriteInfo>();
     }
@@ -18,22 +17,13 @@ namespace engine::Component {
     }
 
     unsigned int Sprite::addSprite(const char* path) {
-        
-        SpriteInfo* info = nullptr;
-        
-        if (assets) {
-            info = assets->getSprite(path);
-        }
-        else {
-            std::cerr << "Failed to add sprite, component uninitialized" << std::endl;
-            return 0;
-        }
-        
+        SpriteInfo* info = AssetManager::getSprite(path);
+
         sprites->push_back(info);
         return sprites->size() - 1;
     }
 
-    void Sprite::setActiveSprite(int id) {
+    void Sprite::setActiveSprite(unsigned int id) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return;
@@ -53,7 +43,7 @@ namespace engine::Component {
         else { std::cout << "Sprite Component: No sprites added." << std::endl; }
     }
 
-    Vec2 Sprite::getDimensions(int id) const {
+    Vec2 Sprite::getDimensions(unsigned int id) const {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return { 0.0f, 0.0f };
@@ -61,7 +51,7 @@ namespace engine::Component {
         return (*sprites)[id]->dimensions;
     }
 
-    void Sprite::setDimensions(int id, const Vec2& d) {
+    void Sprite::setDimensions(unsigned int id, const Vec2& d) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return;
@@ -74,7 +64,7 @@ namespace engine::Component {
         else { std::cout << "Sprite Component: No sprites added." << std::endl; }
     }
 
-    void Sprite::setNumAnimationFrames(int id, int num_frames) {
+    void Sprite::setNumAnimationFrames(unsigned int id, int num_frames) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return;
@@ -87,7 +77,7 @@ namespace engine::Component {
         else { std::cout << "Sprite Component: No sprites added." << std::endl; }
     }
 
-    void Sprite::setAnimationInterval(int id, int interval) {
+    void Sprite::setAnimationInterval(unsigned int id, int interval) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return;
@@ -106,7 +96,7 @@ namespace engine::Component {
         else { std::cout << "Sprite Component: No sprites added." << std::endl; }
     }
 
-    void Sprite::setCurrentFrame(int id, int frame) {
+    void Sprite::setCurrentFrame(unsigned int id, int frame) {
         if (id < 0 || id >= sprites->size()) {
             std::cout << "Invalid Sprite ID" << std::endl;
             return;

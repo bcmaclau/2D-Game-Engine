@@ -2,8 +2,7 @@
 
 namespace engine {
     
-    void BaseUIObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
-        assets = a;
+    void BaseUIObject::init(float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
         screen_width_units = swu;
         screen_height_units = shu;
         scene_index = si;
@@ -12,7 +11,7 @@ namespace engine {
 
         transform = new Component::Transform();
         sprite = new Component::Sprite();
-        sprite->init(assets, transform);
+        sprite->init(transform);
 
         onInit();
     }

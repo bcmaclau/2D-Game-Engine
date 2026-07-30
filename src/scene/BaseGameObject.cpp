@@ -15,7 +15,7 @@ namespace engine {
             case Component::ID::SPRITE:
                 if (sprite) { std::cout << "Game Object already has Single Sprite Component" << std::endl; return; }
                 sprite = new Component::Sprite();
-                sprite->init(assets, transform);
+                sprite->init(transform);
                 return;
             case Component::ID::BOX_COLLIDER:
                 if (box_collider) { std::cout << "Game Object already has Box Collider Component" << std::endl; return; }
@@ -45,8 +45,7 @@ namespace engine {
     void BaseGameObject::setTag(int t) { tag = t; }
     int BaseGameObject::getTag() const { return tag; }
 
-    void BaseGameObject::init(AssetManager* a, float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
-        assets = a;
+    void BaseGameObject::init(float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
         screen_width_units = swu;
         screen_height_units = shu;
         scene_index = si;
