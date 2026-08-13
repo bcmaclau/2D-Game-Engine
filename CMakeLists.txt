@@ -3,6 +3,7 @@ project(Engine2D VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(Engine2D STATIC
     src/core/Game.cpp
@@ -21,7 +22,7 @@ add_library(Engine2D STATIC
     src/scene/BaseScene.cpp
     src/scene/component/Transform.cpp
     src/scene/component/Sprite.cpp
-    src/scene/component/BoxCollider.cpp
+    src/scene/component/Collider.cpp
     src/physics/Collision.cpp
     src/data_structures/Vector.cpp
     dependencies/glad/src/glad.c

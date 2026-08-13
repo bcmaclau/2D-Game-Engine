@@ -17,10 +17,10 @@ namespace engine {
                 sprite = new Component::Sprite();
                 sprite->init(transform);
                 return;
-            case Component::ID::BOX_COLLIDER:
-                if (box_collider) { std::cout << "Game Object already has Box Collider Component" << std::endl; return; }
-                box_collider = new Component::BoxCollider();
-                box_collider->init(transform);
+            case Component::ID::COLLIDER:
+                if (collider) { std::cout << "Game Object already has Box Collider Component" << std::endl; return; }
+                collider = new Component::Collider();
+                collider->init(this, transform, ungrouped_colliders);
                 return;
             default:
                 std::cout << "Invalid Component ID" << std::endl;
@@ -45,12 +45,13 @@ namespace engine {
     void BaseGameObject::setTag(int t) { tag = t; }
     int BaseGameObject::getTag() const { return tag; }
 
-    void BaseGameObject::init(float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti) {
+    void BaseGameObject::init(float swu, float shu, unsigned int si, PointerArrayList<BaseGameObject>* goti, PointerArrayList<BaseUIObject>* uiti, PointerArrayList<Component::Collider>* uc) {
         screen_width_units = swu;
         screen_height_units = shu;
         scene_index = si;
         go_to_instantiate = goti;
         ui_to_instantiate = uiti;
+        ungrouped_colliders = uc;
 
         attachComponent(Component::ID::TRANSFORM);
 
@@ -81,7 +82,7 @@ namespace engine {
         // delete components
         delete transform;
         if (sprite) { sprite->shutdown(); delete sprite; }
-        if (box_collider) { delete box_collider; }
+        if (collider) { collider->shutdown(); delete collider; }
     }
 
 }

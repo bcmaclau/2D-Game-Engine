@@ -2,14 +2,14 @@
 
 #include "scene/component/Transform.h"
 #include "scene/component/Sprite.h"
-#include "scene/component/BoxCollider.h"
+#include "scene/component/Collider.h"
 
 namespace engine::Component {
 
     enum class ID {
         TRANSFORM,
         SPRITE,
-        BOX_COLLIDER
+        COLLIDER
     };
 
 }

@@ -1,9 +1,13 @@
 #pragma once
 
-#include "engine/scene/component/Components.h"
+#include "engine/scene/component/Transform.h"
+#include "engine/scene/component/Sprite.h"
 #include "engine/input/Input.h"
 
 namespace engine {
+
+    class BaseScene;
+    class BaseGameObject;
 
     class BaseUIObject {
         friend class BaseScene;

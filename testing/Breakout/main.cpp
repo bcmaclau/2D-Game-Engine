@@ -3,7 +3,7 @@
 #include <iostream>
 
 using namespace engine;
-
+/*
 class Brick : public BaseGameObject {
 public:
     unsigned int brick_id;
@@ -166,15 +166,16 @@ public:
         }
     }
 };
+*/
 
 int main() {
-    Breakout first_scene;
+    //Breakout first_scene;
 
-    engine::Game game;
-    game.setTitle("Breakout");
-    game.setWindowDimensions(800, 600);
+    //engine::Game game;
+    //game.setTitle("Breakout");
+    //game.setWindowDimensions(800, 600);
 
-    game.run(first_scene);
+    //game.run(first_scene);
 
     return 0;
 }

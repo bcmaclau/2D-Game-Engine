@@ -4,8 +4,6 @@
 #include "engine/scene/BaseGameObject.h"
 #include "engine/data_structures/Vector.h"
 
-#include <vector>
-
 namespace engine {
 
     class Texture;

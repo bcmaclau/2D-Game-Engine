@@ -8,4 +8,7 @@
 #include "engine/scene/BaseGameObject.h"
 #include "engine/scene/BaseUIObject.h"
 #include "engine/scene/component/Components.h"
+#include "engine/scene/component/Transform.h"
+#include "engine/scene/component/Sprite.h"
+#include "engine/scene/component/Collider.h"
 #include "engine/data_structures/Vector.h"

@@ -19,15 +19,11 @@ namespace engine {
     class AssetManager;
     class SpriteRenderer;
     class Camera2D;
+    struct CollisionResult;
 
     class BaseUIObject;
 
-    namespace Collision {
-        enum class Side {
-            TOP, BOTTOM, LEFT, RIGHT
-        };
-        struct Result;
-    }
+    namespace Component { class Collider; }
 
     class BaseScene {
         friend class Game;
@@ -35,11 +31,11 @@ namespace engine {
     public:
         BaseScene() : swap_scene(false), new_scene(nullptr), end_game(false), in_use_sprites(true),
         camera(nullptr), camera_follow(nullptr),
-        game_objects(nullptr), go_to_instantiate(nullptr), ui_to_instantiate(nullptr), physics_objects(nullptr), collisions(nullptr) {}
+        game_objects(nullptr), go_to_instantiate(nullptr), ui_to_instantiate(nullptr),
+        collision_groups(nullptr), ungrouped_colliders(nullptr), collisions(nullptr) {}
         virtual ~BaseScene() {}
 
-        template <typename T>
-        void swapScene() {
+        template <typename T> void swapScene() {
             static_assert(std::is_base_of<BaseScene, T>::value, "T must derive from BaseScene");
 
             new_scene = new T();
@@ -47,38 +43,37 @@ namespace engine {
         }
 
         void endGame();
-
-        template <typename T>
-        T* instantiateGameObject() {
+        template <typename T> T *instantiateGameObject() {
             static_assert(std::is_base_of<BaseGameObject, T>::value, "T must derive from BaseGameObject");
 
-            T* obj = new T();
-            obj->init(screen_width_units, screen_height_units, game_objects->size(), go_to_instantiate, ui_to_instantiate);
+            T *obj = new T();
+            obj->init(screen_width_units, screen_height_units, game_objects->size(), go_to_instantiate, ui_to_instantiate, ungrouped_colliders);
             go_to_instantiate->push_back(obj);
             return obj;
         }
-        void destroyGameObject(BaseGameObject* obj);
-
-        template <typename T>
-        T* instantiateUIObject() {
+        void destroyGameObject(BaseGameObject *obj);
+        template <typename T> T *instantiateUIObject() {
             static_assert(std::is_base_of<BaseUIObject, T>::value, "T must derive from BaseUIObject");
 
-            T* obj = new T();
+            T *obj = new T();
             obj->init(screen_width_units, screen_height_units, ui_objects->size(), go_to_instantiate, ui_to_instantiate);
             ui_to_instantiate->push_back(obj);
             return obj;
         }
-        void destroyUIObject(BaseUIObject* obj);
+        void destroyUIObject(BaseUIObject *obj);
 
         Vec2 getScreenDimensions() const;
 
         Vec2 getCameraPosition() const;
-        void setCameraPosition(const Vec2& pos);
-        void moveCamera(const Vec2& delta);
-        void cameraFollow(BaseGameObject* obj);
+        void setCameraPosition(const Vec2 &pos);
+        void moveCamera(const Vec2 &delta);
+        void cameraFollow(BaseGameObject *obj);
         void cameraUnfollow();
 
-        void addSpriteDirectory(const char* path, bool recurse);
+        void addSpriteDirectory(const char *path, bool recurse);
+
+        unsigned int createNewCollisionGroup();
+        void moveToCollisionGroup(BaseGameObject* obj, unsigned int collision_group_index);
 
     protected:
         // user implemented functions
@@ -101,12 +96,12 @@ namespace engine {
         unsigned int screen_width_pixels, screen_height_pixels;
         float screen_width_units, screen_height_units;
         bool swap_scene;
-        BaseScene* new_scene;
+        BaseScene *new_scene;
         bool end_game;
         bool in_use_sprites;
 
-        Camera2D* camera;
-        BaseGameObject* camera_follow;
+        Camera2D *camera;
+        BaseGameObject *camera_follow;
 
         PointerArrayList<BaseGameObject>* game_objects;
         PointerArrayList<BaseGameObject>* go_to_instantiate;
@@ -117,12 +112,20 @@ namespace engine {
         PointerLinkedList<Component::Sprite>* go_render_order;
         PointerLinkedList<Component::Sprite>* ui_render_order;
 
-        PointerArrayList<BaseGameObject>* physics_objects;
-        PointerArrayList<Collision::Result>* collisions;
+        // A collision group is a list of collider components
+        // By default all colliders will be placed in an 'ungrouped' collision group until manually placed in another
+        // The ungrouped collision group will always be first in the collision groups list
+        PointerArrayList<PointerArrayList<Component::Collider>>* collision_groups;
+        PointerArrayList<Component::Collider>* ungrouped_colliders;
+        PointerArrayList<CollisionResult>* collisions;
 
-        void removeGOFromLists(BaseGameObject* obj);
-        void removeUIFromList(BaseUIObject* obj);
-        PLLNode<Component::Sprite>* insertSpriteToRO(Component::Sprite* sprite, PointerLinkedList<Component::Sprite>* render_order);
+        void removeGOFromLists(BaseGameObject *obj);
+        void removeUIFromList(BaseUIObject *obj);
+
+        PLLNode<Component::Sprite>* insertSpriteToRO(Component::Sprite *sprite, PointerLinkedList<Component::Sprite> *render_order);
+
+        void swapCollisionGroup(Component::Collider* collider, PointerArrayList<Component::Collider>* new_group);
+        void removeFromCollisionGroup(Component::Collider* collider);
     };
 
 }
