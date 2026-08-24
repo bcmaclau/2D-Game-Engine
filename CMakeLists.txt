@@ -40,7 +40,9 @@ target_include_directories(Engine2D PRIVATE
     dependencies/
 )
 
-add_subdirectory(dependencies/glfw)
+# changing configuration for development on nixos
+#add_subdirectory(dependencies/glfw)
+find_package(glfw3 REQUIRED)
 add_subdirectory(dependencies/glm)
 
 target_link_libraries(Engine2D PUBLIC

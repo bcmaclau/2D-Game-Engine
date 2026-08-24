@@ -27,7 +27,7 @@ namespace engine {
     }
 
     void Collision::updateCollisions() {
-        // handles collision between 2 ungrouped colliders
+        // finds collision between 2 ungrouped colliders
         PointerArrayList<Component::Collider>* ungrouped_colliders = (*collision_groups)[0];
         for (unsigned int i = 0; i < ungrouped_colliders->size(); i++) {
             Component::Collider* a = (*ungrouped_colliders)[i];
@@ -109,7 +109,7 @@ namespace engine {
     }
 
     bool Collision::AABBColliding(const AABB& a, const AABB& b) {
-        return a.max_x >= b.min_x && a.min_x <= b.max_x && a.max_y >= b.min_y && a.min_y <= b.max_x;
+        return a.max_x >= b.min_x && a.min_x <= b.max_x && a.max_y >= b.min_y && a.min_y <= b.max_y;
     }
 
     bool Collision::AABBPointColliding(const AABB& a, const Point& b) {
