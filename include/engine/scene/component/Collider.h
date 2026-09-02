@@ -37,7 +37,7 @@ namespace engine::Component {
         Collider() : go_reference(nullptr), transform(nullptr), type(Type::STATIC), set_type(false),
         collision_group(nullptr), group_index(0), active(true),
         aabbs(nullptr), points(nullptr), current_aabb(nullptr), current_point(nullptr), prev_collisions(nullptr), current_collisions(nullptr),
-        velocity(Vec2(0.0f, 0.0f)), acceleration(Vec2(0.0f, 0.0f)), mass(1.0f) {}
+        true_velocity(Vec2(0.0f, 0.0f)), acceleration(Vec2(0.0f, 0.0f)), bonus_velocity(Vec2(0.0f, 0.0f)), mass(1.0f), apply_gravity(true), react_physics(true) {}
         ~Collider() {}
 
         void setType(Type t);
@@ -47,7 +47,7 @@ namespace engine::Component {
 
         // functions that affect dynamic colliders
         void addForce(const Vec2& force);
-        void setVelocity(const Vec2& v);
+        void setBonusVelocity(const Vec2& v);
 
     private:
         void init(BaseGameObject* gor, Transform* t, PointerArrayList<Collider>* cg);
@@ -73,8 +73,12 @@ namespace engine::Component {
         PointerArrayList<CollisionResult>* current_collisions;
 
         // info relevant if collider is dynamic
-        Vec2 velocity, acceleration;
+        Vec2 true_velocity, acceleration;
+        Vec2 bonus_velocity;
         float mass;
+        bool apply_gravity;
+        bool react_physics;
+        Vec2 last_pos;
     };
 
 }

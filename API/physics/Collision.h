@@ -45,6 +45,7 @@ namespace engine {
         static bool AABBColliding(const AABB& a, const AABB& b);
         static bool AABBPointColliding(const AABB& a, const Point& b);
         static CollisionResult* createResult(Component::Collider* a, Component::Collider* b);
+        static void resolveDynamicCollisions(Component::Collider* a, Component::Collider* b);
 
         static PointerArrayList<PointerArrayList<Component::Collider>>* collision_groups;
         static PointerArrayList<CollisionResult>* collisions;

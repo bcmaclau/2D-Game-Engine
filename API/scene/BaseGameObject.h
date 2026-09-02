@@ -2,7 +2,6 @@
 
 #include "scene/BaseScene.h"
 #include "scene/BaseUIObject.h"
-#include "physics/Collision.h"
 #include "data_structures/PointerArrayList.h"
 
 namespace engine {
@@ -17,6 +16,7 @@ namespace engine {
     class BaseGameObject {
         friend class BaseScene;
         friend class BaseUIObject;
+        friend class Collision;
 
     public:
         BaseGameObject() : scene_index(0), alive(true), screen_width_units(0), screen_height_units(0),

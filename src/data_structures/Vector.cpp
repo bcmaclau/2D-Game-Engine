@@ -36,6 +36,10 @@ namespace engine {
         return *this;
     }
 
+    bool Vec2::operator==(const Vec2& other) const {
+        return this->x == other.x && this->y == other.y;
+    }
+
     float Vec2::magnitude(const Vec2& vec) { return std::sqrtf(vec.x * vec.x + vec.y * vec.y); }
 
     Vec2 Vec2::normalize(const Vec2& vec) { return vec / magnitude(vec); }

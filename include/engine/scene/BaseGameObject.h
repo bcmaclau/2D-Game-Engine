@@ -21,6 +21,7 @@ namespace engine {
     class BaseGameObject {
         friend class BaseScene;
         friend class BaseUIObject;
+        friend class Collision;
 
     public:
         BaseGameObject() : scene_index(0), alive(true), screen_width_units(0), screen_height_units(0),

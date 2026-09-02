@@ -26,6 +26,8 @@ namespace engine {
 
         Vec2& operator/=(float scale);
 
+        bool operator==(const Vec2& other) const;
+
         static float magnitude(const Vec2& vec);
 
         static Vec2 normalize(const Vec2& vec);

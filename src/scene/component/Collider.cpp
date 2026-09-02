@@ -34,9 +34,12 @@ namespace engine::Component {
 
     void Collider::update() {
         if (type == Type::DYNAMIC) {
+            // recording the object's last position
+            last_pos = transform->getPosition();
+
             // updating the game object's transform position
-            velocity += acceleration;
-            transform->move(velocity);
+            true_velocity += acceleration;
+            transform->move(true_velocity + bonus_velocity);
 
             // updating aabb and point positions
             Vec2 t_pos = transform->getPosition();
@@ -83,6 +86,10 @@ namespace engine::Component {
             transform->getPosition().x + offset.x,
             transform->getPosition().y + offset.y
         });
+    }
+
+    void Collider::setBonusVelocity(const Vec2& v) {
+        bonus_velocity = v;
     }
 
 }

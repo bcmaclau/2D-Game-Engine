@@ -36,6 +36,7 @@ namespace engine {
                 if (colliding(a, b)) {
                     CollisionResult* a_result = createResult(a, b);
                     CollisionResult* b_result = createResult(b, a);
+                    resolveDynamicCollisions(a, b);
                     a->current_collisions->push_back(a_result);
                     b->current_collisions->push_back(b_result);
                 }
@@ -56,6 +57,7 @@ namespace engine {
                         if (colliding(collider_a, collider_b)) {
                             CollisionResult* a_result = createResult(collider_a, collider_b);
                             CollisionResult* b_result = createResult(collider_b, collider_a);
+                            resolveDynamicCollisions(collider_a, collider_b);
                             collider_a->current_collisions->push_back(a_result);
                             collider_b->current_collisions->push_back(b_result);
                         }
@@ -138,6 +140,131 @@ namespace engine {
         ret->penetration = pen;
         ret->side = side;
         return ret;
+    }
+
+    void Collision::resolveDynamicCollisions(Component::Collider* a, Component::Collider* b) {
+        if (a->type != Component::Collider::Type::DYNAMIC && b->type != Component::Collider::Type::DYNAMIC) { return; }
+        if (a->type == Component::Collider::Type::TRIGGER || b->type == Component::Collider::Type::TRIGGER) { return; }
+        if (a->type == Component::Collider::Type::STATIC && b->type == Component::Collider::Type::STATIC) { return; }
+
+        Component::Collider* d1 = nullptr, * d2 = nullptr, * s1 = nullptr;
+        if (a->type == Component::Collider::Type::DYNAMIC) { d1 = a; }
+        else { s1 = a; }
+        if (b->type == Component::Collider::Type::DYNAMIC) {
+            if (d1) { d2 = b; }
+            else { d1 = b; }
+        }
+        else { s1 = b; }
+
+        // both colliders are dynamic
+        if (d1 && d2) {
+            Component::Collider* r1 = nullptr, * r2 = nullptr, * n1 = nullptr, * n2 = nullptr;
+            /*
+            if (d1->react_physics) { r1 = d1; }
+            else { n1 = d1; }
+            if (d2->react_physics) {
+                if (r1) { r2 = d2; }
+                else { r1 = d2; } 
+            }
+            else {
+                if (n1) { n2 = d2; }
+                else { n1 = d2; }
+            }
+            */
+
+            n1 = d1;
+            n2 = d2;
+
+            // both colliders are non-reactive
+            //if (n1 && n2) {
+            if (true) {
+                if (n1->transform->getPosition() == n1->last_pos) {
+                    CollisionResult* result = createResult(n2, n1);
+                    if (result->side == CollisionSide::TOP) {
+                        n2->transform->move(Vec2(0.0f, -result->penetration));
+                    }
+                    else if (result->side == CollisionSide::BOTTOM) {
+                        n2->transform->move(Vec2(0.0f, result->penetration));
+                    }
+                    else if (result->side == CollisionSide::LEFT) {
+                        n2->transform->move(Vec2(result->penetration, 0.0f));
+                    }
+                    else {
+                        n2->transform->move(Vec2(-result->penetration, 0.0f));
+                    }
+                    delete result;
+                }
+                else if (n2->transform->getPosition() == n2->last_pos) {
+                    CollisionResult* result = createResult(n1, n2);
+                    if (result->side == CollisionSide::TOP) {
+                        n1->transform->move(Vec2(0.0f, -result->penetration));
+                    }
+                    else if (result->side == CollisionSide::BOTTOM) {
+                        n1->transform->move(Vec2(0.0f, result->penetration));
+                    }
+                    else if (result->side == CollisionSide::LEFT) {
+                        n1->transform->move(Vec2(result->penetration, 0.0f));
+                    }
+                    else {
+                        n1->transform->move(Vec2(-result->penetration, 0.0f));
+                    }
+                    delete result;
+                }
+                else {
+                    CollisionResult* result = createResult(n1, n2);
+                    
+                    float n1_ratio = 0.0f;
+                    float n2_ratio = 0.0f;
+                    if (result->side == CollisionSide::TOP || result->side == CollisionSide::BOTTOM) {
+                        float n1_part = std::abs(n1->last_pos.y - n1->transform->getPosition().y);
+                        float n2_part = std::abs(n2->last_pos.y - n2->transform->getPosition().y);
+                        n1_ratio = n1_part / (n1_part + n2_part);
+                        n2_ratio = n2_part / (n1_part + n2_part);
+                    }
+                    else {
+                        float n1_part = std::abs(n1->last_pos.x - n1->transform->getPosition().x);
+                        float n2_part = std::abs(n2->last_pos.x - n2->transform->getPosition().x);
+                        n1_ratio = n1_part / (n1_part + n2_part);
+                        n2_ratio = n2_part / (n1_part + n2_part);
+                    }
+
+                    if (result->side == CollisionSide::TOP) {
+                        n1->transform->move(Vec2(0.0f, -n1_ratio * result->penetration));
+                        n2->transform->move(Vec2(0.0f, n2_ratio * result->penetration));
+                    }
+                    else if (result->side == CollisionSide::BOTTOM) {
+                        n1->transform->move(Vec2(0.0f, n1_ratio * result->penetration));
+                        n2->transform->move(Vec2(0.0f, -n2_ratio * result->penetration));
+                    }
+                    else if (result->side == CollisionSide::LEFT) {
+                        n1->transform->move(Vec2(n1_ratio * result->penetration, 0.0f));
+                        n2->transform->move(Vec2(-n2_ratio * result->penetration, 0.0f));
+                    }
+                    else {
+                        n1->transform->move(Vec2(-n1_ratio * result->penetration, 0.0f));
+                        n2->transform->move(Vec2(n2_ratio * result->penetration, 0.0f));
+                    }
+                    delete result;
+                }
+            }
+        }
+        // 1 dynamic collider, 1 static
+        else {
+            CollisionResult* result = createResult(d1, s1);
+            if (result->side == CollisionSide::TOP) {
+                d1->transform->move(Vec2(0.0f, -result->penetration));
+            }
+            else if (result->side == CollisionSide::BOTTOM) {
+                d1->transform->move(Vec2(0.0f, result->penetration));
+            }
+            else if (result->side == CollisionSide::LEFT) {
+                d1->transform->move(Vec2(result->penetration, 0.0f));
+            }
+            else {
+                d1->transform->move(Vec2(-result->penetration, 0.0f));
+            }
+            delete result;
+        }
     }
 
     void Collision::endFrame() {

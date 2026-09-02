@@ -22,27 +22,31 @@ public:
     }
 
     void onFixedUpdate() override {
+        Vec2 move_velocity = Vec2(0.0f, 0.0f);
         if (Input::isKeyHeld(Input::Key::A)) {
-            transform->move(Vec2(-speed, 0.0f));
+            move_velocity.x -= speed;
         }
         if (Input::isKeyHeld(Input::Key::D)) {
-            transform->move(Vec2(speed, 0.0f));
+            move_velocity.x += speed;
         }
         if (Input::isKeyHeld(Input::Key::W)) {
-            transform->move(Vec2(0.0f, speed));
+            move_velocity.y += speed;
         }
         if (Input::isKeyHeld(Input::Key::S)) {
-            transform->move(Vec2(0.0f, -speed));
+            move_velocity.y -= speed;
         }
+        collider->setBonusVelocity(move_velocity);
     }
 
-    void onCollisionEnter(CollisionResult* collision) override {
+    void onCollisionExit(BaseGameObject* other) override {
         std::cout << "YES" << std::endl;
     }
 };
 
 class TestObj2 : public BaseGameObject {
 public:
+    float speed = 0.3;
+
     void onInit() override {
         attachComponent(Component::ID::SPRITE);
         sprite->setActiveSprite(sprite->addSprite("assets/sprites/red_brick.png"));
@@ -51,6 +55,23 @@ public:
         attachComponent(Component::ID::COLLIDER);
         collider->setType(Component::Collider::Type::DYNAMIC);
         collider->addBoxCollider(Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f));
+    }
+
+    void onFixedUpdate() override {
+        Vec2 move_velocity = Vec2(0.0f, 0.0f);
+        if (Input::isKeyHeld(Input::Key::LEFT)) {
+            move_velocity.x -= speed;
+        }
+        if (Input::isKeyHeld(Input::Key::RIGHT)) {
+            move_velocity.x += speed;
+        }
+        if (Input::isKeyHeld(Input::Key::UP)) {
+            move_velocity.y += speed;
+        }
+        if (Input::isKeyHeld(Input::Key::DOWN)) {
+            move_velocity.y -= speed;
+        }
+        collider->setBonusVelocity(move_velocity);
     }
 };
 
